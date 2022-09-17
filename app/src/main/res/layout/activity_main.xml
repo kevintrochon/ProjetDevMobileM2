@@ -12,10 +12,27 @@
         android:layout_height="wrap_content" />
 
     <Button
+        android:id="@+id/DetailsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="Detail"
-        android:id="@+id/DetailsButton"/>
+        android:layout_marginBottom="95dp"
+        android:text="Detail" />
+
+    <Button
+        android:id="@+id/NotificationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="47dp"
+        android:text="notify" />
+
+    <Button
+        android:id="@+id/DenotificationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="7dp"
+        android:text="Cancel" />
 
 </RelativeLayout>

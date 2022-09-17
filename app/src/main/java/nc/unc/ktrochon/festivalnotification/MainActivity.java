@@ -22,13 +22,15 @@ import java.util.Scanner;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import nc.unc.ktrochon.festivalnotification.entity.DetailsDuConcert;
 import nc.unc.ktrochon.festivalnotification.entity.ListeDesConcerts;
+import nc.unc.ktrochon.festivalnotification.notification.ConcertNotification;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView textView;
     private Button detailButton;
+    private Button notification;
+    private Button denotification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,25 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 getDetaisl();
+            }
+        });
+
+        //TODO A supprimer.
+        ConcertNotification concertNotification = new ConcertNotification(MainActivity.this);
+        notification = (Button) findViewById(R.id.NotificationButton);
+        notification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                concertNotification.notify(1,false, "My Notification"," HelloWorld");
+            }
+        });
+
+        denotification = (Button) findViewById(R.id.DenotificationButton);
+        denotification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                concertNotification.cancelNotification(1);
             }
         });
     }
