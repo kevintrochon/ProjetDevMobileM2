@@ -20,9 +20,6 @@
             android:name=".DescriptionDuConcertActivity"
             android:exported="false" />
         <activity
-            android:name=".DetailsDesConcertsActivity"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
