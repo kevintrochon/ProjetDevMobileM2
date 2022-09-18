@@ -31,8 +31,6 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView textView;
     private Button detailButton;
-    private Button notification;
-    private Button denotification;
     private ListeDesConcerts festival;
 
     @Override
@@ -43,30 +41,12 @@ public class MainActivity extends AppCompatActivity {
                 ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         textView = (TextView) findViewById(R.id.text_API);
+//        TODO A supprimer
         detailButton = (Button) findViewById(R.id.DetailsButton);
         detailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getDetaisl();
-            }
-        });
-
-        //TODO A supprimer.
-        ConcertNotification concertNotification = new ConcertNotification(MainActivity.this);
-        notification = (Button) findViewById(R.id.NotificationButton);
-        notification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                concertNotification.notify(1,false, "My Notification"," HelloWorld");
-            }
-        });
-
-        denotification = (Button) findViewById(R.id.DenotificationButton);
-        denotification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                concertNotification.cancelNotification(1);
             }
         });
     }

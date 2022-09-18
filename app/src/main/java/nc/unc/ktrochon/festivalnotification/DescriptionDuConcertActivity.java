@@ -7,6 +7,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +23,7 @@ import java.util.Scanner;
 import javax.net.ssl.HttpsURLConnection;
 
 import nc.unc.ktrochon.festivalnotification.entity.DetailsDuConcert;
+import nc.unc.ktrochon.festivalnotification.notification.ConcertNotification;
 
 public class DescriptionDuConcertActivity extends AppCompatActivity {
 
@@ -31,6 +34,7 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
     TextView jour = null;
     TextView heure = null;
     ImageView imageView = null;
+    CheckBox favori = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,21 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
         heure = (TextView) findViewById(R.id.Concert_Heure);
         imageView = (ImageView) findViewById(R.id.Concert_Image);
         jour = (TextView) findViewById(R.id.Concert_Jour);
+        favori = (CheckBox) findViewById(R.id.Concert_Favori);
+        ConcertNotification concertNotification = new ConcertNotification(DescriptionDuConcertActivity.this);
+
+        favori.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (favori.isChecked()){
+                    concertNotification.notify(1,false, "My concert notification",artiste.getText().toString());
+                    favori.setActivated(true);
+                }else {
+                    concertNotification.cancelNotification(1);
+                    favori.setActivated(false);
+                }
+            }
+        });
     }
     @Override
     protected void onResume() {
