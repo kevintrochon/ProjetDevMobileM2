@@ -18,7 +18,9 @@ import com.owlike.genson.Genson;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -29,8 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView textView;
     private Button detailButton;
-    private Button notification;
-    private Button denotification;
+    private ListeDesConcerts festival;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,30 +41,12 @@ public class MainActivity extends AppCompatActivity {
                 ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         textView = (TextView) findViewById(R.id.text_API);
+//        TODO A supprimer
         detailButton = (Button) findViewById(R.id.DetailsButton);
         detailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getDetaisl();
-            }
-        });
-
-        //TODO A supprimer.
-        ConcertNotification concertNotification = new ConcertNotification(MainActivity.this);
-        notification = (Button) findViewById(R.id.NotificationButton);
-        notification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                concertNotification.notify(1,false, "My Notification"," HelloWorld");
-            }
-        });
-
-        denotification = (Button) findViewById(R.id.DenotificationButton);
-        denotification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                concertNotification.cancelNotification(1);
             }
         });
     }
@@ -88,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                         inputStream = new BufferedInputStream(connection.getInputStream());
                         Scanner scanner = new Scanner(inputStream);
                         Genson genson = new Genson();
-                        ListeDesConcerts festival = genson.deserialize(scanner.nextLine(),ListeDesConcerts.class);
+                        festival = genson.deserialize(scanner.nextLine(),ListeDesConcerts.class);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

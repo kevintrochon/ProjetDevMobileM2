@@ -7,6 +7,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.owlike.genson.Genson;
@@ -20,16 +23,45 @@ import java.util.Scanner;
 import javax.net.ssl.HttpsURLConnection;
 
 import nc.unc.ktrochon.festivalnotification.entity.DetailsDuConcert;
+import nc.unc.ktrochon.festivalnotification.notification.ConcertNotification;
 
 public class DescriptionDuConcertActivity extends AppCompatActivity {
 
-    TextView textView = null;
+    TextView artiste = null;
+    TextView description = null;
+    TextView web = null;
+    TextView scene = null;
+    TextView jour = null;
+    TextView heure = null;
+    ImageView imageView = null;
+    CheckBox favori = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_description_du_concert);
-        textView = (TextView) findViewById(R.id.ConcertDetails);
+        artiste = (TextView) findViewById(R.id.Concert_Artiste);
+        description = (TextView) findViewById(R.id.Concert_Description);
+        web = (TextView) findViewById(R.id.Concert_Facebook);
+        scene = (TextView) findViewById(R.id.Concert_Scene);
+        heure = (TextView) findViewById(R.id.Concert_Heure);
+        imageView = (ImageView) findViewById(R.id.Concert_Image);
+        jour = (TextView) findViewById(R.id.Concert_Jour);
+        favori = (CheckBox) findViewById(R.id.Concert_Favori);
+        ConcertNotification concertNotification = new ConcertNotification(DescriptionDuConcertActivity.this);
+
+        favori.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (favori.isChecked()){
+                    concertNotification.notify(1,false, "My concert notification",artiste.getText().toString());
+                    favori.setActivated(true);
+                }else {
+                    concertNotification.cancelNotification(1);
+                    favori.setActivated(false);
+                }
+            }
+        });
     }
     @Override
     protected void onResume() {
@@ -52,7 +84,13 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                textView.setText(detailConcert.toString());
+                                artiste.setText(detailConcert.getData().getArtiste());
+                                description.setText(detailConcert.getData().getTexte());
+                                web.setText(detailConcert.getData().getWeb());
+                                scene.setText(detailConcert.getData().getScene());
+                                jour.setText(detailConcert.getData().getJour());
+                                heure.setText(detailConcert.getData().getHeure());
+                                //TODO PEnsez a ajouter une image par defaut.
                             }
                         });
                     }
