@@ -1,27 +1,23 @@
 package nc.unc.ktrochon.festivalnotification.entity;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
 
-@Entity
-public class FavoriConcert {
-    @PrimaryKey
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+import java.io.Serializable;
+
+@Entity(tableName = "FavoriConcert")
+public class FavoriConcert implements Serializable {
+
+    @PrimaryKey(autoGenerate = true)
     int favoriId;
     @ColumnInfo(name = "nom")
     String artiste;
     String time;
     String heure;
     String Jours;
-    boolean isFavori;
-
-    public FavoriConcert(String artiste, String time, String heure, String jours, boolean isFavori) {
-        this.artiste = artiste;
-        this.time = time;
-        this.heure = heure;
-        Jours = jours;
-        this.isFavori = isFavori;
-    }
+    int isFavori;
 
     public String getArtiste() {
         return artiste;
@@ -55,18 +51,27 @@ public class FavoriConcert {
         Jours = jours;
     }
 
-    public boolean isFavori() {
+    public int getFavoriId() {
+        return favoriId;
+    }
+
+    public void setFavoriId(int favoriId) {
+        this.favoriId = favoriId;
+    }
+
+    public int getIsFavori() {
         return isFavori;
     }
 
-    public void setFavori(boolean favori) {
-        isFavori = favori;
+    public void setIsFavori(int isFavori) {
+        this.isFavori = isFavori;
     }
 
     @Override
     public String toString() {
         return "FavoriConcert{" +
-                "artiste='" + artiste + '\'' +
+                "favoriId=" + favoriId +
+                ", artiste='" + artiste + '\'' +
                 ", time='" + time + '\'' +
                 ", heure='" + heure + '\'' +
                 ", Jours='" + Jours + '\'' +

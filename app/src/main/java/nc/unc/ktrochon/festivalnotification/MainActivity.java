@@ -3,6 +3,7 @@ package nc.unc.ktrochon.festivalnotification;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -19,14 +20,11 @@ import com.owlike.genson.Genson;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Scanner;
-import java.util.stream.Stream;
 
 import javax.net.ssl.HttpsURLConnection;
 
 import nc.unc.ktrochon.festivalnotification.entity.ListeDesConcerts;
-import nc.unc.ktrochon.festivalnotification.notification.ConcertNotification;
 import nc.unc.ktrochon.festivalnotification.repository.NotificationDatabase;
 
 public class MainActivity extends AppCompatActivity {
@@ -51,7 +49,10 @@ public class MainActivity extends AppCompatActivity {
                 getDetaisl();
             }
         });
+
         NotificationDatabase database = Room.databaseBuilder(getApplicationContext(),NotificationDatabase.class,"festival-notification").build();
+       //TODO Faire une TasK pour recuperer les information.
+        boolean b = true;
     }
 
     private void getDetaisl() {
