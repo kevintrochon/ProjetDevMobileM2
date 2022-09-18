@@ -7,8 +7,112 @@
     tools:context=".DescriptionDuConcertActivity">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/ConcertDetails"/>
+        android:id="@+id/Label_Artiste"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:layout_marginBottom="-54dp"
+        android:text="@string/artiste"
+        />
+
+    <TextView
+        android:id="@+id/Concert_Artiste"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/Label_Artiste"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="-127dp" />
+
+    <TextView
+        android:id="@+id/Label_Description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/Label_Artiste"
+        android:layout_marginBottom="-43dp"
+        android:text="@string/description" />
+
+    <TextView
+        android:id="@+id/Concert_Description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/Label_Description"
+        android:layout_alignBottom="@+id/Concert_Artiste"
+        android:layout_marginRight="-85dp"
+        android:layout_marginBottom="-28dp" />
+
+    <TextView
+        android:id="@+id/Label_Facebook"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/Label_Description"
+        android:layout_marginBottom="-43dp"
+        android:text="@string/facebook" />
+
+    <TextView
+        android:id="@+id/Concert_Facebook"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/Label_Facebook"
+        android:layout_alignBottom="@+id/Concert_Description"
+        android:layout_marginRight="-94dp"
+        android:layout_marginBottom="-23dp" />
+
+    <TextView
+        android:id="@+id/Label_Scene"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/Label_Facebook"
+        android:layout_marginBottom="-43dp"
+        android:text="@string/scene" />
+
+    <TextView
+        android:id="@+id/Concert_Scene"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/Label_Scene"
+        android:layout_alignBottom="@+id/Concert_Facebook"
+        android:layout_marginRight="-94dp"
+        android:layout_marginBottom="-26dp" />
+
+    <TextView
+        android:id="@+id/Label_Jour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/Label_Scene"
+        android:layout_marginBottom="-43dp"
+        android:text="@string/jour" />
+
+    <TextView
+        android:id="@+id/Concert_Jour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/Label_Jour"
+        android:layout_alignBottom="@+id/Concert_Scene"
+        android:layout_marginRight="-93dp"
+        android:layout_marginBottom="-22dp" />
+
+    <TextView
+        android:id="@+id/Label_Heure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/Label_Jour"
+        android:layout_marginBottom="-43dp"
+        android:text="@string/heure" />
+
+    <TextView
+        android:id="@+id/Concert_Heure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/Label_Heure"
+        android:layout_alignBottom="@+id/Concert_Jour"
+        android:layout_marginRight="-93dp"
+        android:layout_marginBottom="-27dp" />
+
+    <ImageView
+        android:id="@+id/Concert_Image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/Concert_Heure"
+        android:layout_marginBottom="-9dp" />
 
 </RelativeLayout>

@@ -18,7 +18,9 @@ import com.owlike.genson.Genson;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private Button detailButton;
     private Button notification;
     private Button denotification;
+    private ListeDesConcerts festival;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                         inputStream = new BufferedInputStream(connection.getInputStream());
                         Scanner scanner = new Scanner(inputStream);
                         Genson genson = new Genson();
-                        ListeDesConcerts festival = genson.deserialize(scanner.nextLine(),ListeDesConcerts.class);
+                        festival = genson.deserialize(scanner.nextLine(),ListeDesConcerts.class);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">FestivalNotification</string>
+    <string name="artiste">Nom de l\'artiste / groupe : </string>
+    <string name="description">Description de l\'artiste / groupe : </string>
+    <string name="facebook">Facebook de l\'artiste / groupe : </string>
+    <string name="scene">Type de scene : </string>
+    <string name="jour">Jour du concert de l\'artiste / groupe : </string>
+    <string name="heure">Heure du concert de l\'artiste / groupe : </string>
 </resources>

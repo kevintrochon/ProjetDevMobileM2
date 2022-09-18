@@ -1,6 +1,5 @@
 package nc.unc.ktrochon.festivalnotification.notification;
 
-
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -33,7 +32,7 @@ public class ConcertNotification extends ContextWrapper {
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         long [] swPattern = new long[] { 0, 500, 110, 500, 110, 450, 110, 200, 110,
                 170, 40, 450, 110, 200, 110, 170, 40, 500 };
-        //TODO A refactorer
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel notificationChannelHigh = new NotificationChannel(
                     CHANNEL_HIGH_ID, CHANNEL_HIGH_NAME, notificationManager.IMPORTANCE_HIGH );
