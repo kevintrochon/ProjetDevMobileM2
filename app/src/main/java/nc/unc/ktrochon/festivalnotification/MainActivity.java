@@ -20,10 +20,12 @@ import com.owlike.genson.Genson;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 import java.util.Scanner;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import nc.unc.ktrochon.festivalnotification.entity.FavoriConcert;
 import nc.unc.ktrochon.festivalnotification.entity.ListeDesConcerts;
 import nc.unc.ktrochon.festivalnotification.repository.NotificationDatabase;
 
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView;
     private Button detailButton;
     private ListeDesConcerts festival;
+    private NotificationDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +53,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        NotificationDatabase database = Room.databaseBuilder(getApplicationContext(),NotificationDatabase.class,"festival-notification").build();
-       //TODO Faire une TasK pour recuperer les information.
-        boolean b = true;
     }
 
     private void getDetaisl() {
@@ -76,6 +76,11 @@ public class MainActivity extends AppCompatActivity {
                         Scanner scanner = new Scanner(inputStream);
                         Genson genson = new Genson();
                         festival = genson.deserialize(scanner.nextLine(),ListeDesConcerts.class);
+                        database = Room.databaseBuilder(getApplicationContext(),NotificationDatabase.class,"festival-notification").build();
+                        //TODO Recuperation le faite d'etre favori.
+//                       Ajouter une methode de gestion et une mappage
+                        List<FavoriConcert> myFavori = database.favoriDAO().loadAll();
+                        boolean b = myFavori.get(0).getIsFavori()==1? true : false;
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
