@@ -1,6 +1,8 @@
 package nc.unc.ktrochon.festivalnotification;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 
@@ -25,16 +27,19 @@ import java.util.Scanner;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import nc.unc.ktrochon.festivalnotification.adapter.MyAdapterMainActivity;
 import nc.unc.ktrochon.festivalnotification.entity.FavoriConcert;
 import nc.unc.ktrochon.festivalnotification.entity.ListeDesConcerts;
 import nc.unc.ktrochon.festivalnotification.repository.NotificationDatabase;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private MyAdapterMainActivity adapter;
     private TextView textView;
     private Button detailButton;
     private ListeDesConcerts festival;
     private NotificationDatabase database;
+    private boolean isFavori;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +49,7 @@ public class MainActivity extends AppCompatActivity {
                 ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         textView = (TextView) findViewById(R.id.text_API);
-//        TODO A supprimer
-        detailButton = (Button) findViewById(R.id.DetailsButton);
-        detailButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getDetaisl();
-            }
-        });
-
+        Genson genson = new Genson();
     }
 
     private void getDetaisl() {
@@ -60,8 +57,8 @@ public class MainActivity extends AppCompatActivity {
         this.startActivity(intent);
     }
 
-    public void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -80,13 +77,13 @@ public class MainActivity extends AppCompatActivity {
                         //TODO Recuperation le faite d'etre favori.
 //                       Ajouter une methode de gestion et une mappage
                         List<FavoriConcert> myFavori = database.favoriDAO().loadAll();
-                        boolean b = myFavori.get(0).getIsFavori()==1? true : false;
-                        runOnUiThread(new Runnable() {
+                        isFavori = true; //myFavori.get(0).getIsFavori()==1? true : false;
+/*                        runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 textView.setText(festival.toString());
                             }
-                        });
+                        });*/
                     }
                     inputStream.close();
                 } catch (Exception e) {
@@ -101,10 +98,25 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
+    public void onResume() {
+        super.onResume();
+
+
+        adapter = new MyAdapterMainActivity(festival, this, isFavori);
+        RecyclerView recyclerView = findViewById(R.id.groupes_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        recyclerView.setAdapter(adapter);
+    }
+
     public boolean isNetworkAvailable() {
         ConnectivityManager cm = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected();
+    }
+
+    @Override
+    public void onClick(View view) {
+        getDetaisl();
     }
 }

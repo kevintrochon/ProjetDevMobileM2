@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/groupes_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_groupe">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </RelativeLayout>
+
     <TextView
         android:id="@+id/text_API"
         android:layout_width="wrap_content"
