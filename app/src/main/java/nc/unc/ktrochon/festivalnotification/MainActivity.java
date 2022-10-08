@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //TODO Recuperation le faite d'etre favori.
 //                       Ajouter une methode de gestion et une mappage
                         List<FavoriConcert> myFavori = database.favoriDAO().loadAll();
-                        isFavori = myFavori.get(0).getIsFavori()==1? true : false;
+                        isFavori = false;//myFavori.get(0).getIsFavori()==1? true : false;
                         Bitmap finalBitmap = bitmap;
                         runOnUiThread(new Runnable() {
                             @Override
