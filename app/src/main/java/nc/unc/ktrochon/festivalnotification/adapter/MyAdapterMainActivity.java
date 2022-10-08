@@ -30,18 +30,16 @@ import nc.unc.ktrochon.festivalnotification.entity.FavoriConcert;
 import nc.unc.ktrochon.festivalnotification.entity.ListeDesConcerts;
 
 public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainActivity.ViewHolder> {
-
-    private static final String API_URL = "https://daviddurand.info/D228/festival/illustrations/";
-    private static final String END_URL = "/image.jpg";
-
     private ListeDesConcerts listeDesConcerts;
     View.OnClickListener listener;
     private boolean favori;
+    private Bitmap bitmap;
 
-    public MyAdapterMainActivity(ListeDesConcerts listeDesConcerts, View.OnClickListener listener, boolean favori) {
+    public MyAdapterMainActivity(ListeDesConcerts listeDesConcerts, View.OnClickListener listener, boolean favori, Bitmap bitmap) {
         this.listeDesConcerts = listeDesConcerts;
         this.listener = listener;
         this.favori = favori;
+        this.bitmap = bitmap;
     }
 
     @NonNull
@@ -63,31 +61,7 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
         /**
          * récupération de l'image du groupe
          */
-        new Thread (new Runnable() {
-
-            @Override
-            public void run() {
-                HttpsURLConnection connection = null;
-                InputStream inputStream = null;
-
-                try {
-                    URL url = new URL(API_URL + nomConcert + END_URL);
-                    connection = (HttpsURLConnection) url.openConnection();
-
-                    if (connection.getResponseCode()== HttpURLConnection.HTTP_OK) {
-                        inputStream = new BufferedInputStream(connection.getInputStream());
-                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                        holder.imageGroup.setImageBitmap(bitmap);
-                    }
-
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-
+        holder.imageGroup.setImageBitmap(bitmap);
         // ajout de l'image si favori
         if (favori){
             holder.imageFavori.setImageResource(R.drawable.favori);
@@ -109,6 +83,6 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
         CardView cardView = itemView.findViewById(R.id.card_view_listgroupe);
         TextView groupView = cardView.findViewById(R.id.textgroup_view);
         ImageView imageGroup = cardView.findViewById(R.id.imagegroup_view);
-        ImageView imageFavori = cardView.findViewById(R.id.imagefavori_view);
+        ImageView imageFavori = cardView.findViewById(R.id.nomgroup_view);
     }
 }
