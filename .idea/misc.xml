@@ -3,9 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Temp/Github/ProjetDevMobileM2/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/Temp/Github/ProjetDevMobileM2/app/src/main/res/layout/item_groupe.xml" value="0.24479166666666666" />
         <entry key="..\:/Users/Utilisateur/AndroidStudioProjects/ProjetDevMobileM2/app/src/main/res/layout/activity_description_du_concert.xml" value="0.4" />
         <entry key="..\:/Users/Utilisateur/AndroidStudioProjects/ProjetDevMobileM2/app/src/main/res/layout/activity_details_des_concerts.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Utilisateur/AndroidStudioProjects/ProjetDevMobileM2/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Utilisateur/AndroidStudioProjects/ProjetDevMobileM2/app/src/main/res/layout/item_groupe.xml" value="0.1721014492753623" />
       </map>
     </option>
   </component>
