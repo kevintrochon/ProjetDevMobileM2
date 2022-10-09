@@ -42,6 +42,10 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
         this.bitmap = bitmap;
     }
 
+    public void setData(){
+
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

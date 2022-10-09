@@ -40,6 +40,7 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
     CheckBox favori = null;
     DetailsDuConcert detailConcert = null;
     NotificationDatabase database = null;
+    private String nomDuGroupe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +55,7 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
         jour = (TextView) findViewById(R.id.Concert_Jour);
         favori = (CheckBox) findViewById(R.id.Concert_Favori);
         ConcertNotification concertNotification = new ConcertNotification(DescriptionDuConcertActivity.this);
-
+        nomDuGroupe = getIntent().getStringExtra("nomGroupe");
         favori.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -101,7 +102,7 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
                 InputStream inputStream = null;
                 try {
                     if (isNetworkAvailable()) {
-                        URL url = new URL("https://daviddurand.info/D228/festival/info/diesel-groove");
+                        URL url = new URL("https://daviddurand.info/D228/festival/info/"+nomDuGroupe);
                         connection = (HttpsURLConnection) url.openConnection();
                         connection.setRequestMethod("GET");
                         inputStream = new BufferedInputStream(connection.getInputStream());
