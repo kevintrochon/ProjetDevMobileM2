@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean isFavori;
     private RecyclerView recyclerView;
     private Bitmap bitmap = null;
+    ProgressDialog pd;
 
     private static final String API_URL = "https://daviddurand.info/D228/festival/illustrations/";
     private static final String END_URL = "/image.jpg";
@@ -70,6 +72,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void onResume() {
         super.onResume();
+        initViews();
+    }
+
+    public boolean isNetworkAvailable() {
+        ConnectivityManager cm = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
+    }
+
+    @Override
+    public void onClick(View view) {
+        TextView cardView = view.findViewById(R.id.textgroup_view);
+        getDetaisl(cardView.getText().toString());
+    }
+
+    private void initViews() {
+        pd = new ProgressDialog(this);
+        pd.setMessage("Chargement en cours...");
+        pd.setCancelable(false);
+        pd.show();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -105,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 recyclerView = findViewById(R.id.groupes_recycler_view);
                                 recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this,LinearLayoutManager.VERTICAL,false));
                                 recyclerView.setAdapter(MainActivity.this.adapter);
+                                pd.hide();
                             }
                         });
                     }
@@ -119,18 +144,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }).start();
-    }
 
-    public boolean isNetworkAvailable() {
-        ConnectivityManager cm = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
-    }
-
-    @Override
-    public void onClick(View view) {
-        TextView cardView = view.findViewById(R.id.textgroup_view);
-        getDetaisl(cardView.getText().toString());
     }
 }
