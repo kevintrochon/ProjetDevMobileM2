@@ -122,13 +122,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/navigation_description_view" />
 
-<!--    <fragment-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:id="@+id/fragment_description"-->
-<!--        android:name="nc.unc.ktrochon.festivalnotification.fragment.DescriptionFragment"-->
-<!--        />-->
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -143,6 +136,5 @@
         android:elevation="2dp"
         app:menu="@menu/item_navigation"
         />
-
 
 </RelativeLayout>

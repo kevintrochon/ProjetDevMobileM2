@@ -126,7 +126,7 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
             }
         });
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.container_description_menu,imageFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.container_description_menu,descriptionFragment).commit();
 
     }
     @Override
@@ -158,11 +158,10 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
                                         switch (item.getItemId()){
                                             case R.id.image_groupe:
                                                 getSupportFragmentManager().beginTransaction()
-                                                        .replace(R.id.container_description_menu,imageFragment)
+                                                        .add(R.id.container_description_menu,ImageFragment.newInstance(detailConcert.getData().getImage()),ImageFragment.class.getName())
                                                         .commit();
                                                 return true;
                                             case R.id.description_groupe:
-                                                //DescriptionFragment fragment = (DescriptionFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_description);
                                                 getSupportFragmentManager().beginTransaction()
                                                         .add(R.id.container_description_menu,DescriptionFragment.newInstance(description),DescriptionFragment.class.getName())
                                                         .commit();
@@ -175,7 +174,6 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
                                 scene.setText(detailConcert.getData().getScene());
                                 jour.setText(detailConcert.getData().getJour());
                                 heure.setText(detailConcert.getData().getHeure());
-                                //TODO PEnsez a ajouter une image par defaut.
                             }
                         });
                     }

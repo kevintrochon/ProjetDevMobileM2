@@ -6,7 +6,6 @@
     tools:context=".fragment.ImageFragment"
     android:background="#814DDD">
 
-    <!-- TODO: Update blank fragment layout -->
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

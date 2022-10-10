@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private NotificationDatabase database;
     private boolean isFavori;
     private RecyclerView recyclerView;
+    private Bitmap bitmap = null;
 
     private static final String API_URL = "https://daviddurand.info/D228/festival/illustrations/";
     private static final String END_URL = "/image.jpg";
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void getDetaisl(String nomGroupe) {
         Intent intent = new Intent(this, DescriptionDuConcertActivity.class);
         intent.putExtra("nomGroupe",nomGroupe);
+        intent.putExtra("photo",bitmap);
         this.startActivity(intent);
     }
 
@@ -73,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void run() {
                 HttpsURLConnection connection = null;
                 InputStream inputStream = null;
-                Bitmap bitmap = null;
+
                 try {
                     if (isNetworkAvailable()) {
                         URL url = new URL("https://daviddurand.info/D228/festival/liste");
