@@ -1,6 +1,7 @@
 package nc.unc.ktrochon.festivalnotification;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
@@ -16,6 +17,8 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
+
 import com.owlike.genson.Genson;
 
 import java.io.BufferedInputStream;
@@ -38,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ListeDesConcerts festival;
     private NotificationDatabase database;
     private boolean isFavori;
+    private RecyclerView recyclerView;
+    private Bitmap bitmap = null;
 
     private static final String API_URL = "https://daviddurand.info/D228/festival/illustrations/";
     private static final String END_URL = "/image.jpg";
@@ -51,8 +56,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         StrictMode.setThreadPolicy(policy);
     }
 
-    private void getDetaisl() {
+    private void getDetaisl(String nomGroupe) {
         Intent intent = new Intent(this, DescriptionDuConcertActivity.class);
+        intent.putExtra("nomGroupe",nomGroupe);
+        intent.putExtra("photo",bitmap);
         this.startActivity(intent);
     }
 
@@ -68,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void run() {
                 HttpsURLConnection connection = null;
                 InputStream inputStream = null;
-                Bitmap bitmap = null;
+
                 try {
                     if (isNetworkAvailable()) {
                         URL url = new URL("https://daviddurand.info/D228/festival/liste");
@@ -94,10 +101,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                adapter = new MyAdapterMainActivity(festival, MainActivity.this, isFavori, finalBitmap);
-                                RecyclerView recyclerView = findViewById(R.id.groupes_recycler_view);
+                                MainActivity.this.adapter = new MyAdapterMainActivity(festival, MainActivity.this, isFavori, finalBitmap);
+                                recyclerView = findViewById(R.id.groupes_recycler_view);
                                 recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this,LinearLayoutManager.VERTICAL,false));
-                                recyclerView.setAdapter(adapter);
+                                recyclerView.setAdapter(MainActivity.this.adapter);
                             }
                         });
                     }
@@ -123,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        getDetaisl();
+        TextView cardView = view.findViewById(R.id.textgroup_view);
+        getDetaisl(cardView.getText().toString());
     }
 }

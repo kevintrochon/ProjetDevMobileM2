@@ -4,120 +4,137 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DescriptionDuConcertActivity">
+    tools:context=".DescriptionDuConcertActivity"
+    android:background="#814DDD">
 
-    <TextView
-        android:id="@+id/Label_Artiste"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="0dp"
-        android:layout_marginBottom="-54dp"
-        android:text="@string/artiste"
+        android:id="@+id/zone_nom_artiste">
+
+        <TextView
+            android:id="@+id/nom_Artiste"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Nom de l artiste"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/Table_information_concert"
+        android:layout_below="@+id/zone_nom_artiste">
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/Label_Scene"
+                android:layout_width="137dp"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:gravity="center"
+                android:text="@string/scene"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/Label_Jour"
+                android:layout_width="133dp"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:gravity="center"
+                android:text="@string/jour"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/Label_Heure"
+                android:layout_width="141dp"
+                android:layout_height="wrap_content"
+                android:layout_column="3"
+                android:gravity="center"
+                android:text="@string/heure"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/Concert_Scene"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="1"
+                    android:textColor="#FFFFFF"
+                    android:textSize="25sp"
+                    android:textStyle="italic"
+                    android:gravity="center"
+                    />
+
+                <TextView
+                    android:id="@+id/Concert_Jour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="2"
+                    android:textColor="#FFFFFF"
+                    android:textSize="25sp"
+                    android:textStyle="italic"
+                    android:gravity="center"
+                    />
+
+                <TextView
+                    android:id="@+id/Concert_Heure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="3"
+                    android:textColor="#FFFFFF"
+                    android:textSize="25sp"
+                    android:textStyle="italic"
+                    android:gravity="center"
+                    />
+            </TableRow>
+    </TableLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/navigation_description_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Table_information_concert"
+        android:elevation="2dp"
+        app:menu="@menu/item_navigation_description"
+        android:background="#814DDD"/>
+
+    <FrameLayout
+        android:id="@+id/container_description_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/navigation_description_view" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/container_layout"
+        android:layout_above="@+id/navigation_view"/>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/navigation_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:elevation="2dp"
+        app:menu="@menu/item_navigation"
         />
-
-    <TextView
-        android:id="@+id/Concert_Artiste"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/Label_Artiste"
-        android:layout_marginLeft="100dp"
-        android:layout_marginRight="-127dp" />
-
-    <TextView
-        android:id="@+id/Label_Description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/Label_Artiste"
-        android:layout_marginBottom="-43dp"
-        android:text="@string/description" />
-
-    <TextView
-        android:id="@+id/Concert_Description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/Label_Description"
-        android:layout_marginTop="53dp"
-        android:layout_marginRight="-85dp"
-        android:layout_marginBottom="-45dp" />
-
-    <TextView
-        android:id="@+id/Label_Facebook"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/Concert_Description"
-        android:layout_marginBottom="-178dp"
-        android:text="@string/facebook" />
-
-    <TextView
-        android:id="@+id/Concert_Facebook"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/Label_Facebook"
-        android:layout_marginRight="192dp"
-        android:layout_marginBottom="-48dp" />
-
-    <TextView
-        android:id="@+id/Label_Scene"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/Concert_Facebook"
-        android:layout_marginBottom="-92dp"
-        android:text="@string/scene" />
-
-    <TextView
-        android:id="@+id/Concert_Scene"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/Label_Scene"
-        android:layout_alignBottom="@+id/Concert_Facebook"
-        android:layout_marginRight="-234dp"
-        android:layout_marginBottom="-63dp" />
-
-    <TextView
-        android:id="@+id/Label_Jour"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/Label_Scene"
-        android:layout_marginBottom="-53dp"
-        android:text="@string/jour" />
-
-    <TextView
-        android:id="@+id/Concert_Jour"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/Label_Jour"
-        android:layout_alignBottom="@+id/Concert_Scene"
-        android:layout_marginRight="-102dp"
-        android:layout_marginBottom="-34dp" />
-
-    <TextView
-        android:id="@+id/Label_Heure"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/Label_Jour"
-        android:layout_marginBottom="-58dp"
-        android:text="@string/heure" />
-
-    <TextView
-        android:id="@+id/Concert_Heure"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/Label_Heure"
-        android:layout_alignBottom="@+id/Concert_Jour"
-        android:layout_marginRight="-93dp"
-        android:layout_marginBottom="-36dp" />
-
-    <ImageView
-        android:id="@+id/Concert_Image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/Concert_Heure"
-        android:layout_marginBottom="-9dp" />
-
-    <CheckBox
-        android:id="@+id/Concert_Favori"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"/>
 
 </RelativeLayout>
