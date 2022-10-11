@@ -67,11 +67,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStart() {
         super.onStart();
         //TODO Faire la page de chargement.
+        pd = new ProgressDialog(this);
+        pd.setMessage("Chargement en cours...");
+        pd.setCancelable(false);
+        pd.show();
     }
 
     public void onResume() {
         super.onResume();
         initViews();
+        pd.hide();
     }
 
     public boolean isNetworkAvailable() {
@@ -88,10 +93,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initViews() {
-        pd = new ProgressDialog(this);
+        /*pd = new ProgressDialog(this);
         pd.setMessage("Chargement en cours...");
         pd.setCancelable(false);
-        pd.show();
+        pd.show();*/
 
         new Thread(new Runnable() {
             @Override
@@ -124,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                MainActivity.this.adapter = new MyAdapterMainActivity(festival, MainActivity.this, isFavori, finalBitmap);
+                                MainActivity.this.adapter = new MyAdapterMainActivity(festival, MainActivity.this, isFavori, finalBitmap,myFavori);
                                 recyclerView = findViewById(R.id.groupes_recycler_view);
                                 recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this,LinearLayoutManager.VERTICAL,false));
                                 recyclerView.setAdapter(MainActivity.this.adapter);

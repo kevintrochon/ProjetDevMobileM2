@@ -114,7 +114,7 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
                         }
                         else {
                             myfavoriConcert.setIsFavori(IS_FAVORI);
-                            myfavoriConcert.setArtiste(artiste.getText().toString());
+                            myfavoriConcert.setArtiste(nomDuGroupe);
                             myfavoriConcert.setHeure(heure.toString());
                             myfavoriConcert.setJours(jour.toString());
                             myfavoriConcert.setTime(""+detailConcert.getData().getTime());
