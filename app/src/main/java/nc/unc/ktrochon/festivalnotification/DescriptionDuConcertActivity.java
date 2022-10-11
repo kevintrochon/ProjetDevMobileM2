@@ -1,11 +1,16 @@
 package nc.unc.ktrochon.festivalnotification;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -15,6 +20,8 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.owlike.genson.Genson;
@@ -55,6 +62,7 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
     private String addressWeb;
     private FavoriConcert myfavoriConcert = new FavoriConcert();
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,31 +75,14 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
         ConcertNotification concertNotification = new ConcertNotification(DescriptionDuConcertActivity.this);
         nomDuGroupe = getIntent().getStringExtra("nomGroupe");
         database = Room.databaseBuilder(getApplicationContext(), NotificationDatabase.class,"festival-notification").build();
-        /*favori.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (favori.isChecked()){
-                }else {
-                    concertNotification.cancelNotification(1);
-                    favori.setActivated(false);
-                    new Thread(()->{
-                        database = Room.databaseBuilder(getApplicationContext(), NotificationDatabase.class,"festival-notification").build();
-                        FavoriConcert favoriConcert = new FavoriConcert();
-                        favoriConcert.setFavoriId(1);
-                        favoriConcert.setIsFavori(1);
-                        favoriConcert.setArtiste(artiste.getText().toString());
-                        favoriConcert.setHeure(heure.toString());
-                        favoriConcert.setJours(jour.toString());
-                        favoriConcert.setTime(""+detailConcert.getData().getTime());
-                        database.favoriDAO().deleteFavori(favoriConcert);
-                    }).start();
-                }
-            }
-        });*/
         bottomNavigationView = findViewById(R.id.navigation_view);
         navigationView = findViewById(R.id.navigation_description_view);
-        //getSupportFragmentManager().beginTransaction().replace(R.id.container_layout,homeFragment).commit();
-
+        boolean isfavori = getIntent().getBooleanExtra("favori",false);
+        if (isfavori){
+            bottomNavigationView.getMenu().findItem(R.id.notification).setIcon(R.drawable.ic_done);
+        }else {
+            bottomNavigationView.getMenu().findItem(R.id.notification).setIcon(R.drawable.ic_notifications);
+        }
         DescriptionDuConcertActivity.this.bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -109,10 +100,8 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
                         return true;
                     case R.id.notification:
                         if (myfavoriConcert.getIsFavori()==IS_FAVORI){
-                            item.setIcon(R.drawable.ic_done);
+                            item.setIcon(R.drawable.ic_notifications);
                             concertNotification.notify(1,false, "My concert notification",artiste.getText().toString());
-                        }
-                        else {
                             myfavoriConcert.setIsFavori(IS_FAVORI);
                             myfavoriConcert.setArtiste(nomDuGroupe);
                             myfavoriConcert.setHeure(heure.toString());
@@ -121,18 +110,29 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
                             new Thread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    database.favoriDAO().deleteFavori(myfavoriConcert);
+                                }
+                            }).start();
+                        }
+                        else {
+                            myfavoriConcert.setIsFavori(IS_FAVORI);
+                            myfavoriConcert.setArtiste(nomDuGroupe);
+                            myfavoriConcert.setHeure(heure.toString());
+                            myfavoriConcert.setJours(jour.toString());
+                            myfavoriConcert.setTime(""+detailConcert.getData().getTime());
+                            item.setIcon(R.drawable.ic_done);
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
                                     database.favoriDAO().insertFavori(myfavoriConcert);
                                 }
                             }).start();
                         }
-                        item.setIcon(R.drawable.ic_done);
                         return true;
                 }
                 return false;
             }
         });
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.container_description_menu,descriptionFragment).commit();
 
     }
     @Override

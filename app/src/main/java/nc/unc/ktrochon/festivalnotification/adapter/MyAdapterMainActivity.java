@@ -37,15 +37,14 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
     private Bitmap bitmap;
     private List<FavoriConcert> favoris;
 
-    public MyAdapterMainActivity(ListeDesConcerts listeDesConcerts, View.OnClickListener listener, boolean favori, Bitmap bitmap,List<FavoriConcert> favoris) {
+    public MyAdapterMainActivity(ListeDesConcerts listeDesConcerts, View.OnClickListener listener, Bitmap bitmap,List<FavoriConcert> favoris) {
         this.listeDesConcerts = listeDesConcerts;
         this.listener = listener;
-        this.favori = favori;
         this.bitmap = bitmap;
         this.favoris = favoris;
     }
 
-    public boolean getMyFavorit(String nomConcert,int position){
+    public boolean getMyFavorit(String nomConcert){
         boolean isFavori = false;
         for (FavoriConcert f:favoris
              ) {
@@ -70,7 +69,7 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
         holder.cardView.setTag((position));
         List<String> maListe = Arrays.asList(listeDesConcerts.getData());
         String nomConcert = maListe.get(position);
-        favori = getMyFavorit(nomConcert,position);
+        favori = getMyFavorit(nomConcert);
         holder.groupView.setText(nomConcert);
         holder.cardView.setOnClickListener(listener);
 
@@ -100,5 +99,9 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
         TextView groupView = cardView.findViewById(R.id.textgroup_view);
         ImageView imageGroup = cardView.findViewById(R.id.imagegroup_view);
         ImageView imageFavori = cardView.findViewById(R.id.nomgroup_view);
+    }
+
+    public boolean isFavori() {
+        return favori;
     }
 }

@@ -60,17 +60,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void getDetaisl(String nomGroupe) {
         Intent intent = new Intent(this, DescriptionDuConcertActivity.class);
         intent.putExtra("nomGroupe",nomGroupe);
-        intent.putExtra("photo",bitmap);
+        isFavori = this.adapter.getMyFavorit(nomGroupe);
+        intent.putExtra("favori",isFavori);
         this.startActivity(intent);
     }
 
     protected void onStart() {
         super.onStart();
         //TODO Faire la page de chargement.
-        pd = new ProgressDialog(this);
-        pd.setMessage("Chargement en cours...");
-        pd.setCancelable(false);
-        pd.show();
     }
 
     public void onResume() {
@@ -93,11 +90,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initViews() {
-        /*pd = new ProgressDialog(this);
+        pd = new ProgressDialog(this);
         pd.setMessage("Chargement en cours...");
         pd.setCancelable(false);
-        pd.show();*/
-
+        pd.show();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -121,15 +117,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             inputStream = new BufferedInputStream(connection.getInputStream());
                             bitmap = BitmapFactory.decodeStream(inputStream);
                         }
-                        //TODO Recuperation le faite d'etre favori.
-//                       Ajouter une methode de gestion et une mappage
                         List<FavoriConcert> myFavori = database.favoriDAO().loadAll();
-                        isFavori = false;//myFavori.get(0).getIsFavori()==1? true : false;
                         Bitmap finalBitmap = bitmap;
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                MainActivity.this.adapter = new MyAdapterMainActivity(festival, MainActivity.this, isFavori, finalBitmap,myFavori);
+                                MainActivity.this.adapter = new MyAdapterMainActivity(festival, MainActivity.this, finalBitmap,myFavori);
                                 recyclerView = findViewById(R.id.groupes_recycler_view);
                                 recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this,LinearLayoutManager.VERTICAL,false));
                                 recyclerView.setAdapter(MainActivity.this.adapter);
@@ -148,6 +141,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }).start();
-
     }
 }
