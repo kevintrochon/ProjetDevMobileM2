@@ -15,8 +15,8 @@ public interface FavoriDAO {
     @Query("SELECT * FROM FavoriConcert")
     List<FavoriConcert> loadAll();
 
-    @Query("SELECT * FROM FavoriConcert WHERE favoriId = :id")
-    FavoriConcert loadById(int id);
+    @Query("SELECT * FROM FavoriConcert WHERE nom = :id")
+    FavoriConcert loadById(String id);
 
     @Insert
     void insertFavori(FavoriConcert favoriConcert);
