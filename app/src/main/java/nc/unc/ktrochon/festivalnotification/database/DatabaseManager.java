@@ -8,7 +8,7 @@ import android.util.Log;
 public class DatabaseManager extends SQLiteOpenHelper {
 
     private static final String DATABASENAME = "festival-notification";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public DatabaseManager(Context context) {
         super(context, DATABASENAME, null, DATABASE_VERSION);
@@ -17,8 +17,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         String strSQL = "CREATE TABLE Favori ("
-                        + "idFavori integer primary key autoincrement,"
-                        + "name TEXT not null,"
+                        + "name TEXT primary key,"
                         + "time TEXT not null,"
                         + "heure TEXT not null,"
                         + "jours TEXT not null,"

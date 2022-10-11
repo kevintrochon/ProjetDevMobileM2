@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,6 +28,7 @@ import java.util.Scanner;
 import javax.net.ssl.HttpsURLConnection;
 
 import nc.unc.ktrochon.festivalnotification.entity.DetailsDuConcert;
+import nc.unc.ktrochon.festivalnotification.entity.FavoriConcert;
 import nc.unc.ktrochon.festivalnotification.fragment.DescriptionFragment;
 import nc.unc.ktrochon.festivalnotification.fragment.ImageFragment;
 import nc.unc.ktrochon.festivalnotification.fragment.YoutubeFragment;
@@ -37,6 +37,7 @@ import nc.unc.ktrochon.festivalnotification.repository.NotificationDatabase;
 
 public class DescriptionDuConcertActivity extends AppCompatActivity {
 
+    private static final int IS_FAVORI = 1;
     TextView artiste = null;
     TextView scene = null;
     TextView jour = null;
@@ -52,6 +53,7 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
     private BottomNavigationView navigationView;
     private String description;
     private String addressWeb;
+    private FavoriConcert myfavoriConcert = new FavoriConcert();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,23 +66,11 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
         jour = (TextView) findViewById(R.id.Concert_Jour);
         ConcertNotification concertNotification = new ConcertNotification(DescriptionDuConcertActivity.this);
         nomDuGroupe = getIntent().getStringExtra("nomGroupe");
+        database = Room.databaseBuilder(getApplicationContext(), NotificationDatabase.class,"festival-notification").build();
         /*favori.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (favori.isChecked()){
-                    concertNotification.notify(1,false, "My concert notification",artiste.getText().toString());
-                    favori.setActivated(true);
-                    new Thread(()->{
-                        database = Room.databaseBuilder(getApplicationContext(), NotificationDatabase.class,"festival-notification").build();
-                        FavoriConcert favoriConcert = new FavoriConcert();
-                        favoriConcert.setFavoriId(1);
-                        favoriConcert.setIsFavori(1);
-                        favoriConcert.setArtiste(artiste.getText().toString());
-                        favoriConcert.setHeure(heure.toString());
-                        favoriConcert.setJours(jour.toString());
-                        favoriConcert.setTime(""+detailConcert.getData().getTime());
-                        database.favoriDAO().insertFavori(favoriConcert);
-                    }).start();
                 }else {
                     concertNotification.cancelNotification(1);
                     favori.setActivated(false);
@@ -118,8 +108,24 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
                         getSupportFragmentManager().beginTransaction().replace(R.id.container_layout,youtubeFragment).commit();
                         return true;
                     case R.id.notification:
+                        if (myfavoriConcert.getIsFavori()==IS_FAVORI){
+                            item.setIcon(R.drawable.ic_done);
+                            concertNotification.notify(1,false, "My concert notification",artiste.getText().toString());
+                        }
+                        else {
+                            myfavoriConcert.setIsFavori(IS_FAVORI);
+                            myfavoriConcert.setArtiste(artiste.getText().toString());
+                            myfavoriConcert.setHeure(heure.toString());
+                            myfavoriConcert.setJours(jour.toString());
+                            myfavoriConcert.setTime(""+detailConcert.getData().getTime());
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    database.favoriDAO().insertFavori(myfavoriConcert);
+                                }
+                            }).start();
+                        }
                         item.setIcon(R.drawable.ic_done);
-                        concertNotification.notify(1,false, "My concert notification",artiste.getText().toString());
                         return true;
                 }
                 return false;
@@ -147,11 +153,16 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
                         Scanner scanner = new Scanner(inputStream);
                         Genson genson = new GensonBuilder().useConstructorWithArguments(true).create();
                         detailConcert = genson.deserialize(scanner.nextLine(),DetailsDuConcert.class);
+                        database = Room.databaseBuilder(getApplicationContext(), NotificationDatabase.class,"festival-notification").build();
+                        FavoriConcert favoriConcert = database.favoriDAO().loadById(nomDuGroupe);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 artiste.setText(detailConcert.getData().getArtiste());
                                 description = detailConcert.getData().getTexte();
+                                getSupportFragmentManager().beginTransaction()
+                                        .add(R.id.container_description_menu,DescriptionFragment.newInstance(description),DescriptionFragment.class.getName())
+                                        .commit();
                                 DescriptionDuConcertActivity.this.navigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
                                     @Override
                                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -174,6 +185,13 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
                                 scene.setText(detailConcert.getData().getScene());
                                 jour.setText(detailConcert.getData().getJour());
                                 heure.setText(detailConcert.getData().getHeure());
+                                if (favoriConcert != null){
+                                    myfavoriConcert.setArtiste(favoriConcert.getArtiste());
+                                    myfavoriConcert.setJours(favoriConcert.getJours());
+                                    myfavoriConcert.setHeure(favoriConcert.getHeure());
+                                    myfavoriConcert.setTime(favoriConcert.getTime());
+                                    myfavoriConcert.setIsFavori(favoriConcert.getIsFavori());
+                                }
                             }
                         });
                     }
