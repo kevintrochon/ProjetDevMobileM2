@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -34,16 +35,25 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
     View.OnClickListener listener;
     private boolean favori;
     private Bitmap bitmap;
+    private List<FavoriConcert> favoris;
 
-    public MyAdapterMainActivity(ListeDesConcerts listeDesConcerts, View.OnClickListener listener, boolean favori, Bitmap bitmap) {
+    public MyAdapterMainActivity(ListeDesConcerts listeDesConcerts, View.OnClickListener listener, Bitmap bitmap,List<FavoriConcert> favoris) {
         this.listeDesConcerts = listeDesConcerts;
         this.listener = listener;
-        this.favori = favori;
         this.bitmap = bitmap;
+        this.favoris = favoris;
     }
 
-    public void setData(){
-
+    public boolean getMyFavorit(String nomConcert){
+        boolean isFavori = false;
+        for (FavoriConcert f:favoris
+             ) {
+            if (f.getArtiste().equalsIgnoreCase(nomConcert) && f.getIsFavori()==1){
+                isFavori = true;
+                break;
+            }
+        }
+        return isFavori;
     }
 
     @NonNull
@@ -59,6 +69,7 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
         holder.cardView.setTag((position));
         List<String> maListe = Arrays.asList(listeDesConcerts.getData());
         String nomConcert = maListe.get(position);
+        favori = getMyFavorit(nomConcert);
         holder.groupView.setText(nomConcert);
         holder.cardView.setOnClickListener(listener);
 
@@ -88,5 +99,9 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
         TextView groupView = cardView.findViewById(R.id.textgroup_view);
         ImageView imageGroup = cardView.findViewById(R.id.imagegroup_view);
         ImageView imageFavori = cardView.findViewById(R.id.nomgroup_view);
+    }
+
+    public boolean isFavori() {
+        return favori;
     }
 }
