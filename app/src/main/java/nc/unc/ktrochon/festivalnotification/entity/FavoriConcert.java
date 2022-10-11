@@ -1,6 +1,7 @@
 package nc.unc.ktrochon.festivalnotification.entity;
 
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -10,9 +11,9 @@ import java.io.Serializable;
 @Entity(tableName = "FavoriConcert")
 public class FavoriConcert implements Serializable {
 
-    @PrimaryKey(autoGenerate = true)
-    int favoriId;
+    @PrimaryKey
     @ColumnInfo(name = "nom")
+    @NonNull
     String artiste;
     String time;
     String heure;
@@ -51,14 +52,6 @@ public class FavoriConcert implements Serializable {
         Jours = jours;
     }
 
-    public int getFavoriId() {
-        return favoriId;
-    }
-
-    public void setFavoriId(int favoriId) {
-        this.favoriId = favoriId;
-    }
-
     public int getIsFavori() {
         return isFavori;
     }
@@ -70,7 +63,6 @@ public class FavoriConcert implements Serializable {
     @Override
     public String toString() {
         return "FavoriConcert{" +
-                "favoriId=" + favoriId +
                 ", artiste='" + artiste + '\'' +
                 ", time='" + time + '\'' +
                 ", heure='" + heure + '\'' +
