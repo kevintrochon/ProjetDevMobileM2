@@ -3,15 +3,22 @@ package nc.unc.ktrochon.festivalnotification.adapter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.owlike.genson.Genson;
+import com.owlike.genson.GensonBuilder;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -19,18 +26,22 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import javax.net.ssl.HttpsURLConnection;
 
 import nc.unc.ktrochon.festivalnotification.R;
+import nc.unc.ktrochon.festivalnotification.entity.DetailsDuConcert;
 import nc.unc.ktrochon.festivalnotification.entity.FavoriConcert;
 import nc.unc.ktrochon.festivalnotification.entity.ListeDesConcerts;
 
-public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainActivity.ViewHolder> {
+public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainActivity.ViewHolder> implements Filterable {
     private ListeDesConcerts listeDesConcerts;
     View.OnClickListener listener;
     private boolean favori;
@@ -40,6 +51,9 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
     InputStream inputStream = null;
     private static final String API_URL = "https://daviddurand.info/D228/festival/illustrations/";
     private static final String END_URL = "/image.jpg";
+    private List<DetailsDuConcert> festival = new ArrayList<>();
+    private String nomDuConcert;
+    DetailsDuConcert detailsDuConcert = null;
 
     public MyAdapterMainActivity(ListeDesConcerts listeDesConcerts, View.OnClickListener listener,List<FavoriConcert> favoris) {
         this.listeDesConcerts = listeDesConcerts;
@@ -89,6 +103,26 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
                 connectionPhoto.disconnect();
             }
         }
+
+        HttpsURLConnection connection = null;
+        try {
+            URL urlConcert = new URL("https://daviddurand.info/D228/festival/info/"+nomDuConcert);
+            connection = (HttpsURLConnection) urlConcert.openConnection();
+            connection.setRequestMethod("GET");
+            inputStream = new BufferedInputStream(connection.getInputStream());
+            Scanner scanner = new Scanner(inputStream);
+            Genson genson = new GensonBuilder().useConstructorWithArguments(true).create();
+            detailsDuConcert = genson.deserialize(scanner.nextLine(),DetailsDuConcert.class);
+            festival.add(detailsDuConcert);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null){
+                connection.disconnect();
+            }
+        }
+
         holder.imageGroup.setImageBitmap(bitmap);
         // ajout de l'image si favori
         if (favori){
@@ -101,6 +135,32 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
     public int getItemCount() {
         List<String> maListe = Arrays.asList(listeDesConcerts.getData());
         return maListe.size();
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                FilterResults results = new FilterResults();
+                results.count = listeDesConcerts.getData().length;
+                results.values = listeDesConcerts.getData();
+                return results;
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                String[] nom = (String[]) filterResults.values;
+                //nom.replace(' ', '-').toLowerCase(Locale.ROOT)
+
+                listeDesConcerts = (ListeDesConcerts) festival.stream().sorted(Comparator.comparing(detailsDuConcert1 -> {
+                    return detailsDuConcert1.getData().getScene();
+                })).collect(Collectors.toList());
+
+                notifyDataSetChanged();
+            }
+        };
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
