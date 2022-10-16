@@ -36,11 +36,14 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
     private boolean favori;
     private Bitmap bitmap;
     private List<FavoriConcert> favoris;
+    HttpsURLConnection connectionPhoto = null;
+    InputStream inputStream = null;
+    private static final String API_URL = "https://daviddurand.info/D228/festival/illustrations/";
+    private static final String END_URL = "/image.jpg";
 
-    public MyAdapterMainActivity(ListeDesConcerts listeDesConcerts, View.OnClickListener listener, Bitmap bitmap,List<FavoriConcert> favoris) {
+    public MyAdapterMainActivity(ListeDesConcerts listeDesConcerts, View.OnClickListener listener,List<FavoriConcert> favoris) {
         this.listeDesConcerts = listeDesConcerts;
         this.listener = listener;
-        this.bitmap = bitmap;
         this.favoris = favoris;
     }
 
@@ -72,10 +75,20 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
         favori = getMyFavorit(nomConcert);
         holder.groupView.setText(nomConcert);
         holder.cardView.setOnClickListener(listener);
-
-        /**
-         * récupération de l'image du groupe
-         */
+        try {
+            URL urlPhoto = new URL(API_URL + nomConcert + END_URL);
+            connectionPhoto = (HttpsURLConnection) urlPhoto.openConnection();
+            if (connectionPhoto.getResponseCode()== HttpURLConnection.HTTP_OK) {
+                inputStream = new BufferedInputStream(connectionPhoto.getInputStream());
+                bitmap = BitmapFactory.decodeStream(inputStream);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (connectionPhoto != null){
+                connectionPhoto.disconnect();
+            }
+        }
         holder.imageGroup.setImageBitmap(bitmap);
         // ajout de l'image si favori
         if (favori){

@@ -45,9 +45,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Bitmap bitmap = null;
     ProgressDialog pd;
 
-    private static final String API_URL = "https://daviddurand.info/D228/festival/illustrations/";
-    private static final String END_URL = "/image.jpg";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void run() {
                 HttpsURLConnection connection = null;
+                HttpsURLConnection connectionPhoto = null;
                 InputStream inputStream = null;
 
                 try {
@@ -110,19 +108,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Genson genson = new Genson();
                         festival = genson.deserialize(scanner.nextLine(),ListeDesConcerts.class);
                         database = Room.databaseBuilder(getApplicationContext(),NotificationDatabase.class,"festival-notification").build();
-                        URL urlPhoto = new URL(API_URL + "Diesel Groove" + END_URL);
-                        connection = (HttpsURLConnection) url.openConnection();
-
-                        if (connection.getResponseCode()== HttpURLConnection.HTTP_OK) {
-                            inputStream = new BufferedInputStream(connection.getInputStream());
-                            bitmap = BitmapFactory.decodeStream(inputStream);
-                        }
                         List<FavoriConcert> myFavori = database.favoriDAO().loadAll();
-                        Bitmap finalBitmap = bitmap;
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                MainActivity.this.adapter = new MyAdapterMainActivity(festival, MainActivity.this, finalBitmap,myFavori);
+                                MainActivity.this.adapter = new MyAdapterMainActivity(festival, MainActivity.this,myFavori);
                                 recyclerView = findViewById(R.id.groupes_recycler_view);
                                 recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this,LinearLayoutManager.VERTICAL,false));
                                 recyclerView.setAdapter(MainActivity.this.adapter);
