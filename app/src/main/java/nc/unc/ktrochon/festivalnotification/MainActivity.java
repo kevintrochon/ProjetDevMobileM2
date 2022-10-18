@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             @Override
                             public void run() {
                                 MainActivity.this.adapter = new MyAdapterMainActivity(festival, MainActivity.this,myFavori);
-                                MainActivity.this.adapter.getFilter().filter("amplifiée");
+                                MainActivity.this.adapter.getFilter().filter("Samedi");
                                 recyclerView = findViewById(R.id.groupes_recycler_view);
                                 recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this,LinearLayoutManager.VERTICAL,false));
                                 recyclerView.setAdapter(MainActivity.this.adapter);

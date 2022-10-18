@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,8 +24,10 @@ import com.owlike.genson.GensonBuilder;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,8 +55,8 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
     private static final String API_URL = "https://daviddurand.info/D228/festival/illustrations/";
     private static final String END_URL = "/image.jpg";
     private List<DetailsDuConcert> festival = new ArrayList<>();
-    private String nomDuConcert;
     DetailsDuConcert detailsDuConcert = null;
+    private String nomConcert;
 
     public MyAdapterMainActivity(ListeDesConcerts listeDesConcerts, View.OnClickListener listener,List<FavoriConcert> favoris) {
         this.listeDesConcerts = listeDesConcerts;
@@ -85,7 +88,7 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.cardView.setTag((position));
         List<String> maListe = Arrays.asList(listeDesConcerts.getData());
-        String nomConcert = maListe.get(position);
+        nomConcert = maListe.get(position);
         favori = getMyFavorit(nomConcert);
         holder.groupView.setText(nomConcert);
         holder.cardView.setOnClickListener(listener);
@@ -104,24 +107,7 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
             }
         }
 
-        HttpsURLConnection connection = null;
-        try {
-            URL urlConcert = new URL("https://daviddurand.info/D228/festival/info/"+nomDuConcert);
-            connection = (HttpsURLConnection) urlConcert.openConnection();
-            connection.setRequestMethod("GET");
-            inputStream = new BufferedInputStream(connection.getInputStream());
-            Scanner scanner = new Scanner(inputStream);
-            Genson genson = new GensonBuilder().useConstructorWithArguments(true).create();
-            detailsDuConcert = genson.deserialize(scanner.nextLine(),DetailsDuConcert.class);
-            festival.add(detailsDuConcert);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (connection != null){
-                connection.disconnect();
-            }
-        }
 
         holder.imageGroup.setImageBitmap(bitmap);
         // ajout de l'image si favori
@@ -140,24 +126,28 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
     @Override
     public Filter getFilter() {
         return new Filter() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             protected FilterResults performFiltering(CharSequence charSequence) {
+                List<DetailsDuConcert> listeATrier = getDetailsForAll();
+                String[] sorted = new String[listeATrier.size()];
+                int index = 0;
+                for (DetailsDuConcert detail:listeATrier) {
+                    if (detail.getData().getJour().equalsIgnoreCase(charSequence.toString())){
+                        sorted[index] = detail.getData().getArtiste().replace(" ","-").toLowerCase(Locale.ROOT);
+                        index ++;
+                    }
+                }
                 FilterResults results = new FilterResults();
+                listeDesConcerts.setData(sorted);
                 results.count = listeDesConcerts.getData().length;
                 results.values = listeDesConcerts.getData();
                 return results;
             }
 
-            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                String[] nom = (String[]) filterResults.values;
-                //nom.replace(' ', '-').toLowerCase(Locale.ROOT)
-
-                listeDesConcerts = (ListeDesConcerts) festival.stream().sorted(Comparator.comparing(detailsDuConcert1 -> {
-                    return detailsDuConcert1.getData().getScene();
-                })).collect(Collectors.toList());
-
+                listeDesConcerts.setData((String[]) filterResults.values);
                 notifyDataSetChanged();
             }
         };
@@ -176,5 +166,34 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
 
     public boolean isFavori() {
         return favori;
+    }
+
+    private List<DetailsDuConcert> getDetailsForAll(){
+        HttpsURLConnection connection = null;
+        try {
+            for (String name: listeDesConcerts.getData()
+                 ) {
+                URL urlConcert = new URL("https://daviddurand.info/D228/festival/info/"+name);
+                connection = (HttpsURLConnection) urlConcert.openConnection();
+                connection.setRequestMethod("GET");
+                inputStream = new BufferedInputStream(connection.getInputStream());
+                Scanner scanner = new Scanner(inputStream);
+                Genson genson = new GensonBuilder().useConstructorWithArguments(true).create();
+                detailsDuConcert = genson.deserialize(scanner.nextLine(),DetailsDuConcert.class);
+                festival.add(detailsDuConcert);
+                inputStream.close();
+            }
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }finally {
+            if (connection != null){
+                connection.disconnect();
+            }
+        }
+        return festival;
     }
 }
