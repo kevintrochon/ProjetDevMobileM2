@@ -53,16 +53,16 @@ import nc.unc.ktrochon.festivalnotification.entity.ListeDesConcerts;
 
 public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainActivity.ViewHolder> implements Filterable {
     private ListeDesConcerts listeDesConcerts;
-    Context context;
+    private Context context;
     private boolean favori;
     private Bitmap bitmap;
     private List<FavoriConcert> favoris;
-    HttpsURLConnection connectionPhoto = null;
-    InputStream inputStream = null;
+    private HttpsURLConnection connectionPhoto = null;
+    private InputStream inputStream = null;
     private static final String API_URL = "https://daviddurand.info/D228/festival/illustrations/";
     private static final String END_URL = "/image.jpg";
     private List<DetailsDuConcert> festival = new ArrayList<>();
-    DetailsDuConcert detailsDuConcert = null;
+    private DetailsDuConcert detailsDuConcert = null;
     private String nomConcert;
 
     public MyAdapterMainActivity(ListeDesConcerts listeDesConcerts, Context context, List<FavoriConcert> favoris) {

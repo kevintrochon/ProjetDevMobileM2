@@ -45,13 +45,13 @@ import nc.unc.ktrochon.festivalnotification.repository.NotificationDatabase;
 public class DescriptionDuConcertActivity extends AppCompatActivity {
 
     private static final int IS_FAVORI = 1;
-    TextView artiste = null;
-    TextView scene = null;
-    TextView jour = null;
-    TextView heure = null;
-    ImageView imageView = null;
-    DetailsDuConcert detailConcert = null;
-    NotificationDatabase database = null;
+    private TextView artiste = null;
+    private TextView scene = null;
+    private TextView jour = null;
+    private TextView heure = null;
+    private ImageView imageView = null;
+    private DetailsDuConcert detailConcert = null;
+    private NotificationDatabase database = null;
     private String nomDuGroupe;
     private BottomNavigationView bottomNavigationView;
     private YoutubeFragment youtubeFragment = new YoutubeFragment();

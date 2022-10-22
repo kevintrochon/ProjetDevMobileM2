@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private String choixUtilisateurFinal;
     private String choixSceneUtilisateur;
     private String choixJourUtilisateur;
-    ProgressDialog pd;
+    private ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
