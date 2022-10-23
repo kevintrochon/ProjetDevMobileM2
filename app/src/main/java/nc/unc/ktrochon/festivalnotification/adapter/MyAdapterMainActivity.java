@@ -103,9 +103,11 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                TextView textView = view.findViewById(R.id.textgroup_view);
+                String texte = textView.getText().toString();
                 Intent intent = new Intent(context, DescriptionDuConcertActivity.class);
-                intent.putExtra("nomGroupe",nomConcert);
-                Boolean isFavori = getMyFavorit(nomConcert);
+                intent.putExtra("nomGroupe",texte);
+                Boolean isFavori = getMyFavorit(texte);
                 intent.putExtra("favori",isFavori);
                 ((Activity) context).startActivityForResult(intent,1);
             }
