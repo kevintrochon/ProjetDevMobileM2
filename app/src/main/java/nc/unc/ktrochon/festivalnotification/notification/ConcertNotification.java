@@ -58,14 +58,14 @@ public class ConcertNotification extends ContextWrapper {
         Context context = getApplicationContext();
 
         /* Lien avec l'activité à ouvrir : ici DescriptionDuConcertActivity */
-        Intent notificationIntent = new Intent(context, DescriptionDuConcertActivity.class);
+        /*Intent notificationIntent = new Intent(context, DescriptionDuConcertActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(
-                getApplicationContext(), 456, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                getApplicationContext(), 456, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);*/
 
         Notification notification = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             notification = new Notification.Builder( getApplicationContext(), channelId )
-                    .setContentIntent( contentIntent )      // On injecte le contentIntent
+                    //.setContentIntent( contentIntent )      // On injecte le contentIntent
                     .setContentTitle( title )
                     .setContentText( message )
                     .setSmallIcon( R.drawable.ic_launcher_foreground )

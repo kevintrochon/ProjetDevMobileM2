@@ -15,6 +15,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -45,13 +46,13 @@ import nc.unc.ktrochon.festivalnotification.repository.NotificationDatabase;
 public class DescriptionDuConcertActivity extends AppCompatActivity {
 
     private static final int IS_FAVORI = 1;
-    TextView artiste = null;
-    TextView scene = null;
-    TextView jour = null;
-    TextView heure = null;
-    ImageView imageView = null;
-    DetailsDuConcert detailConcert = null;
-    NotificationDatabase database = null;
+    private TextView artiste = null;
+    private TextView scene = null;
+    private TextView jour = null;
+    private TextView heure = null;
+    private ImageView imageView = null;
+    private DetailsDuConcert detailConcert = null;
+    private NotificationDatabase database = null;
     private String nomDuGroupe;
     private BottomNavigationView bottomNavigationView;
     private YoutubeFragment youtubeFragment = new YoutubeFragment();
@@ -61,6 +62,7 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
     private String description;
     private String addressWeb;
     private FavoriConcert myfavoriConcert = new FavoriConcert();
+    private int temps;
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -101,7 +103,6 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
                     case R.id.notification:
                         if (myfavoriConcert.getIsFavori()==IS_FAVORI){
                             item.setIcon(R.drawable.ic_notifications);
-                            concertNotification.notify(1,false, "My concert notification",artiste.getText().toString());
                             myfavoriConcert.setIsFavori(IS_FAVORI);
                             myfavoriConcert.setArtiste(nomDuGroupe);
                             myfavoriConcert.setHeure(heure.toString());
@@ -115,6 +116,14 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
                             }).start();
                         }
                         else {
+
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    concertNotification.notify(1,false, "My concert notification",artiste.getText().toString());
+                                }
+                            },temps);
                             myfavoriConcert.setIsFavori(IS_FAVORI);
                             myfavoriConcert.setArtiste(nomDuGroupe);
                             myfavoriConcert.setHeure(heure.toString());
@@ -153,6 +162,7 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
                         Scanner scanner = new Scanner(inputStream);
                         Genson genson = new GensonBuilder().useConstructorWithArguments(true).create();
                         detailConcert = genson.deserialize(scanner.nextLine(),DetailsDuConcert.class);
+                        temps = detailConcert.getData().getTime() * 1000;
                         database = Room.databaseBuilder(getApplicationContext(), NotificationDatabase.class,"festival-notification").build();
                         FavoriConcert favoriConcert = database.favoriDAO().loadById(nomDuGroupe);
                         runOnUiThread(new Runnable() {
