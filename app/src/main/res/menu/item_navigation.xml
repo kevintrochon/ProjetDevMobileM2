@@ -12,11 +12,6 @@
         android:title="Facebook"/>
 
     <item
-        android:id="@+id/youtube"
-        android:icon="@drawable/ic_social_icons_youtube"
-        android:title="Youtube"/>
-
-    <item
         android:id="@+id/notification"
         android:icon="@drawable/ic_notifications"
         android:title="Unotified"/>

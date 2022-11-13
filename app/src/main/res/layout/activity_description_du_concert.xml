@@ -134,7 +134,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:elevation="2dp"
-        app:menu="@menu/item_navigation"
-        />
+        app:menu="@menu/item_navigation" />
 
 </RelativeLayout>
