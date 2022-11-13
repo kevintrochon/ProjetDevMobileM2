@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragment.ImageFragment"
-    android:background="#814DDD">
+    android:background="#000000">
 
     <ImageView
         android:layout_width="wrap_content"
