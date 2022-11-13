@@ -1,21 +1,17 @@
 package nc.unc.ktrochon.festivalnotification.adapter;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,23 +25,19 @@ import com.owlike.genson.GensonBuilder;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 import javax.net.ssl.HttpsURLConnection;
 
 import nc.unc.ktrochon.festivalnotification.DescriptionDuConcertActivity;
-import nc.unc.ktrochon.festivalnotification.MainActivity;
 import nc.unc.ktrochon.festivalnotification.R;
 import nc.unc.ktrochon.festivalnotification.entity.DetailsDuConcert;
 import nc.unc.ktrochon.festivalnotification.entity.FavoriConcert;
@@ -100,17 +92,14 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
         nomConcert = maListe.get(position);
         favori = getMyFavorit(nomConcert);
         holder.groupView.setText(nomConcert);
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TextView textView = view.findViewById(R.id.textgroup_view);
-                String texte = textView.getText().toString();
-                Intent intent = new Intent(context, DescriptionDuConcertActivity.class);
-                intent.putExtra("nomGroupe",texte);
-                Boolean isFavori = getMyFavorit(texte);
-                intent.putExtra("favori",isFavori);
-                ((Activity) context).startActivityForResult(intent,1);
-            }
+        holder.cardView.setOnClickListener(view -> {
+            TextView textView = view.findViewById(R.id.textgroup_view);
+            String texte = textView.getText().toString();
+            Intent intent = new Intent(context, DescriptionDuConcertActivity.class);
+            intent.putExtra("nomGroupe",texte);
+            Boolean isFavori = getMyFavorit(texte);
+            intent.putExtra("favori",isFavori);
+            ((Activity) context).startActivityForResult(intent,1);
         });
         try {
             URL urlPhoto = new URL(API_URL + nomConcert + END_URL);

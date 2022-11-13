@@ -1,16 +1,12 @@
 package nc.unc.ktrochon.festivalnotification;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -21,8 +17,6 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.material.bottomnavigation.BottomNavigationItemView;
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.owlike.genson.Genson;
@@ -39,7 +33,6 @@ import nc.unc.ktrochon.festivalnotification.entity.DetailsDuConcert;
 import nc.unc.ktrochon.festivalnotification.entity.FavoriConcert;
 import nc.unc.ktrochon.festivalnotification.fragment.DescriptionFragment;
 import nc.unc.ktrochon.festivalnotification.fragment.ImageFragment;
-import nc.unc.ktrochon.festivalnotification.fragment.YoutubeFragment;
 import nc.unc.ktrochon.festivalnotification.notification.ConcertNotification;
 import nc.unc.ktrochon.festivalnotification.repository.NotificationDatabase;
 
@@ -55,7 +48,6 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
     private NotificationDatabase database = null;
     private String nomDuGroupe;
     private BottomNavigationView bottomNavigationView;
-    private YoutubeFragment youtubeFragment = new YoutubeFragment();
     private ImageFragment imageFragment = new ImageFragment();
     private DescriptionFragment descriptionFragment = new DescriptionFragment();
     private BottomNavigationView navigationView;
@@ -97,9 +89,6 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
                         Intent intent1 = new Intent(Intent.ACTION_VIEW, Uri.parse(addressWeb));
                         DescriptionDuConcertActivity.this.startActivity(intent1);
                         break;
-                    case R.id.youtube:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container_layout,youtubeFragment).commit();
-                        return true;
                     case R.id.notification:
                         if (myfavoriConcert.getIsFavori()==IS_FAVORI){
                             item.setIcon(R.drawable.ic_notifications);
