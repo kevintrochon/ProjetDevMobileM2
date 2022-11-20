@@ -33,12 +33,17 @@ import nc.unc.ktrochon.festivalnotification.entity.DetailsDuConcert;
 import nc.unc.ktrochon.festivalnotification.entity.FavoriConcert;
 import nc.unc.ktrochon.festivalnotification.fragment.DescriptionFragment;
 import nc.unc.ktrochon.festivalnotification.fragment.ImageFragment;
+import nc.unc.ktrochon.festivalnotification.helper.NetworkHelper;
 import nc.unc.ktrochon.festivalnotification.notification.ConcertNotification;
 import nc.unc.ktrochon.festivalnotification.repository.NotificationDatabase;
 
 public class DescriptionDuConcertActivity extends AppCompatActivity {
-
+    private static final String TAG = "DescriptionDuConcertAct";
     private static final int IS_FAVORI = 1;
+    public static final String APIREST = "https://daviddurand.info/D228/festival/info/";
+    public static final String REQUEST_METHOD = "GET";
+    public static final int SECOND = 1000;
+    public static final String DATABASENAME = "festival-notification";
     private TextView artiste = null;
     private TextView scene = null;
     private TextView jour = null;
@@ -68,7 +73,7 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
         jour = (TextView) findViewById(R.id.Concert_Jour);
         ConcertNotification concertNotification = new ConcertNotification(DescriptionDuConcertActivity.this);
         nomDuGroupe = getIntent().getStringExtra("nomGroupe");
-        database = Room.databaseBuilder(getApplicationContext(), NotificationDatabase.class,"festival-notification").build();
+        database = Room.databaseBuilder(getApplicationContext(), NotificationDatabase.class, DATABASENAME).build();
         bottomNavigationView = findViewById(R.id.navigation_view);
         navigationView = findViewById(R.id.navigation_description_view);
         boolean isfavori = getIntent().getBooleanExtra("favori",false);
@@ -143,15 +148,15 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
                 HttpsURLConnection connection = null;
                 InputStream inputStream = null;
                 try {
-                    if (isNetworkAvailable()) {
-                        URL url = new URL("https://daviddurand.info/D228/festival/info/"+nomDuGroupe);
+                    if (NetworkHelper.isNetworkAvailable(DescriptionDuConcertActivity.this)) {
+                        URL url = new URL(APIREST +nomDuGroupe);
                         connection = (HttpsURLConnection) url.openConnection();
-                        connection.setRequestMethod("GET");
+                        connection.setRequestMethod(REQUEST_METHOD);
                         inputStream = new BufferedInputStream(connection.getInputStream());
                         Scanner scanner = new Scanner(inputStream);
                         Genson genson = new GensonBuilder().useConstructorWithArguments(true).create();
                         detailConcert = genson.deserialize(scanner.nextLine(),DetailsDuConcert.class);
-                        temps = detailConcert.getData().getTime() * 1000;
+                        temps = detailConcert.getData().getTime() * SECOND;
                         database = Room.databaseBuilder(getApplicationContext(), NotificationDatabase.class,"festival-notification").build();
                         FavoriConcert favoriConcert = database.favoriDAO().loadById(nomDuGroupe);
                         runOnUiThread(new Runnable() {
@@ -205,13 +210,6 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
                 }
             }
         }).start();
-    }
-
-    public boolean isNetworkAvailable() {
-        ConnectivityManager cm = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
     }
 
     public String getDescription() {

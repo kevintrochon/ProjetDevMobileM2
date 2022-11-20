@@ -1,5 +1,7 @@
 package nc.unc.ktrochon.festivalnotification;
 
+
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,23 +12,19 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.owlike.genson.Genson;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,10 +36,17 @@ import nc.unc.ktrochon.festivalnotification.adapter.MyAdapterMainActivity;
 import nc.unc.ktrochon.festivalnotification.adapter.MySpinnerAdapter;
 import nc.unc.ktrochon.festivalnotification.entity.FavoriConcert;
 import nc.unc.ktrochon.festivalnotification.entity.ListeDesConcerts;
+import nc.unc.ktrochon.festivalnotification.helper.ChoixJour;
+import nc.unc.ktrochon.festivalnotification.helper.NetworkHelper;
+import nc.unc.ktrochon.festivalnotification.helper.Scene;
 import nc.unc.ktrochon.festivalnotification.repository.NotificationDatabase;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
+    private static final String TAG = "MainActivity";
+    public static final String RESTAPI = "https://daviddurand.info/D228/festival/liste";
+    public static final String REQUEST_METHOD = "GET";
+    public static final String DATABASENAME = "festival-notification";
     private MyAdapterMainActivity adapter;
     private ListeDesConcerts festival;
     private NotificationDatabase database;
@@ -61,9 +66,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         List<String> choixScene = new ArrayList<>();
-        choixScene.add("Scene");
-        choixScene.add("Amplifiée");
-        choixScene.add("Acoustique");
+        choixScene.add(Scene.Scene.toString());
+        choixScene.add(Scene.Amplifiée.toString());
+        choixScene.add(Scene.Acoustique.toString());
         Spinner sceneSpinner = (Spinner) findViewById(R.id.spinner_scene);
         MySpinnerAdapter sceneSpinnerAdapter = new MySpinnerAdapter(this,choixScene,R.layout.item_spinner,R.id.possibilite_filtre);
         sceneSpinner.setAdapter(sceneSpinnerAdapter);
@@ -71,15 +76,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         sceneSpinner.setOnItemSelectedListener(this);
 
         List<String> choixJour = new ArrayList<>();
-        choixJour.add("Jour");
-        choixJour.add("Vendredi");
-        choixJour.add("Samedi");
+        choixJour.add(ChoixJour.Jour.toString());
+        choixJour.add(ChoixJour.Vendredi.toString());
+        choixJour.add(ChoixJour.Samedi.toString());
         Spinner jourSpinner = (Spinner) findViewById(R.id.spinner_jour);
         MySpinnerAdapter jourSpinnerAdapter = new MySpinnerAdapter(this,choixJour,R.layout.item_spinner,R.id.possibilite_filtre);
         jourSpinner.setAdapter(jourSpinnerAdapter);
         jourSpinner.setOnItemSelectedListener(this);
+        adapter = new MyAdapterMainActivity(new ListeDesConcerts(),this);
         recyclerView = findViewById(R.id.groupes_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this,LinearLayoutManager.VERTICAL,false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
     }
 
     private void getDetaisl(String nomGroupe) {
@@ -100,13 +107,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         pd.hide();
     }
 
-    public boolean isNetworkAvailable() {
-        ConnectivityManager cm = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
-    }
-
     private void initViews() {
         pd = new ProgressDialog(this);
         pd.setMessage("Chargement en cours...");
@@ -120,26 +120,27 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 InputStream inputStream = null;
 
                 try {
-                    if (isNetworkAvailable()) {
-                        URL url = new URL("https://daviddurand.info/D228/festival/liste");
+                    if (NetworkHelper.isNetworkAvailable(MainActivity.this)) {
+                        URL url = new URL(RESTAPI);
                         connection = (HttpsURLConnection) url.openConnection();
-                        connection.setRequestMethod("GET");
+                        connection.setRequestMethod(REQUEST_METHOD);
                         inputStream = new BufferedInputStream(connection.getInputStream());
                         Scanner scanner = new Scanner(inputStream);
                         Genson genson = new Genson();
+                        database = Room.databaseBuilder(getApplicationContext(), NotificationDatabase.class, DATABASENAME).build();
+                        List<FavoriConcert> favoriConcerts = database.favoriDAO().loadAll();
                         festival = genson.deserialize(scanner.nextLine(),ListeDesConcerts.class);
-                        database = Room.databaseBuilder(getApplicationContext(),NotificationDatabase.class,"festival-notification").build();
-                        List<FavoriConcert> myFavori = database.favoriDAO().loadAll();
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                MainActivity.this.adapter = new MyAdapterMainActivity(festival, MainActivity.this,myFavori);
-                                recyclerView.setAdapter(MainActivity.this.adapter);
+                                MainActivity.this.adapter.setListeDesConcerts(festival);
+                                MainActivity.this.adapter.setFavoris(favoriConcerts);
                                 pd.hide();
                             }
                         });
                     }
                     inputStream.close();
+                    connection.disconnect();
                 } catch (Exception e) {
                     Log.e("Exchange-JSON :","Connot found the API", e);
                 }
@@ -150,6 +151,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             }
         }).start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     @Override

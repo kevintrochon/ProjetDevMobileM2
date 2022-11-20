@@ -1,10 +1,12 @@
 package nc.unc.ktrochon.festivalnotification.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import com.owlike.genson.Genson;
 import com.owlike.genson.GensonBuilder;
@@ -42,6 +45,7 @@ import nc.unc.ktrochon.festivalnotification.R;
 import nc.unc.ktrochon.festivalnotification.entity.DetailsDuConcert;
 import nc.unc.ktrochon.festivalnotification.entity.FavoriConcert;
 import nc.unc.ktrochon.festivalnotification.entity.ListeDesConcerts;
+import nc.unc.ktrochon.festivalnotification.repository.NotificationDatabase;
 
 public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainActivity.ViewHolder> implements Filterable {
     private ListeDesConcerts listeDesConcerts;
@@ -56,11 +60,21 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
     private List<DetailsDuConcert> festival = new ArrayList<>();
     private DetailsDuConcert detailsDuConcert = null;
     private String nomConcert;
+    private NotificationDatabase database;
 
-    public MyAdapterMainActivity(ListeDesConcerts listeDesConcerts, Context context, List<FavoriConcert> favoris) {
+    public MyAdapterMainActivity(ListeDesConcerts listeDesConcerts, Context context) {
         this.listeDesConcerts = listeDesConcerts;
         this.context = context;
+    }
+
+    public void setListeDesConcerts(ListeDesConcerts listeDesConcerts) {
+        this.listeDesConcerts = listeDesConcerts;
+        notifyDataSetChanged();
+    }
+
+    public void setFavoris(List<FavoriConcert> favoris) {
         this.favoris = favoris;
+        notifyDataSetChanged();
     }
 
     public boolean getMyFavorit(String nomConcert){
@@ -83,8 +97,7 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
         return new ViewHolder(itemView);
     }
 
-
-
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder,final int position) {
         holder.cardView.setTag((position));
@@ -126,6 +139,9 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
 
     @Override
     public int getItemCount() {
+        if (listeDesConcerts.getData()==null){
+            return 0;
+        }
         List<String> maListe = Arrays.asList(listeDesConcerts.getData());
         return maListe.size();
     }
