@@ -15,6 +15,7 @@ import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
@@ -104,7 +105,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onResume() {
         super.onResume();
         initViews();
-        pd.hide();
     }
 
     private void initViews() {
@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         pd.setMessage("Chargement en cours...");
         pd.setCancelable(false);
         pd.show();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -151,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             }
         }).start();
+
     }
 
     @Override

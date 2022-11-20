@@ -8,26 +8,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
-        <ImageView
-            android:id="@+id/imagegroup_view"
-            android:layout_width="250px"
-            android:layout_height="250px"
-            android:scaleType="fitXY">
-        </ImageView>
-
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="#000000">
+
+            <ImageView
+                android:id="@+id/imagegroup_view"
+                android:layout_width="250px"
+                android:layout_height="250px"
+                android:scaleType="fitXY">
+            </ImageView>
 
             <TextView
                 android:id="@+id/textgroup_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="toto"
                 android:textAlignment="center"
-                android:textColor="#9C27B0"
-                android:textSize="18sp" />
+                android:fontFamily="cursive"
+                android:text="Toto"
+                android:textColor="#FFFFFF"
+                android:textSize="30sp"
+                android:textStyle="bold|italic" />
 
             <ImageView
                 android:id="@+id/nomgroup_view"
