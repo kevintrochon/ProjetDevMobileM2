@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public static final String RESTAPI = "https://daviddurand.info/D228/festival/liste";
     public static final String REQUEST_METHOD = "GET";
     public static final String DATABASENAME = "festival-notification";
+
     private MyAdapterMainActivity adapter;
     private ListeDesConcerts festival;
     private NotificationDatabase database;
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         choixScene.add(Scene.Scene.toString());
         choixScene.add(Scene.Amplifiée.toString());
         choixScene.add(Scene.Acoustique.toString());
-        Spinner sceneSpinner = (Spinner) findViewById(R.id.spinner_scene);
+        Spinner sceneSpinner = findViewById(R.id.spinner_scene);
         MySpinnerAdapter sceneSpinnerAdapter = new MySpinnerAdapter(this,choixScene,R.layout.item_spinner,R.id.possibilite_filtre);
         sceneSpinner.setAdapter(sceneSpinnerAdapter);
 

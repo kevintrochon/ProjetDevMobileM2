@@ -2,6 +2,7 @@ package nc.unc.ktrochon.festivalnotification.adapter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -60,7 +61,7 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
     private List<DetailsDuConcert> festival = new ArrayList<>();
     private DetailsDuConcert detailsDuConcert = null;
     private String nomConcert;
-    private NotificationDatabase database;
+    private ProgressDialog progressDialog;
 
     public MyAdapterMainActivity(ListeDesConcerts listeDesConcerts, Context context) {
         this.listeDesConcerts = listeDesConcerts;
@@ -152,8 +153,12 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             protected FilterResults performFiltering(CharSequence charSequence) {
+                /*progressDialog = new ProgressDialog(context);
+                progressDialog.setMessage("Chargement en cours...");
+                progressDialog.setCancelable(false);
+                progressDialog.show();*/
                 List<DetailsDuConcert> listeATrier = getDetailsForAll();
-                String[] sorted = new String[listeATrier.size()];
+                String[] sorted = new String[listeATrier == null ? 0 : listeATrier.size()];
                 int index = 0;
                 String jour;
                 String scene;
@@ -252,7 +257,8 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                listeDesConcerts.setData(new String[1]);
+                charSequence.toString();
+                String.valueOf(filterResults.count);
                 listeDesConcerts.setData((String[]) filterResults.values);
                 notifyDataSetChanged();
             }
@@ -276,6 +282,9 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
 
     private List<DetailsDuConcert> getDetailsForAll(){
         HttpsURLConnection connection = null;
+        if (listeDesConcerts.getData() == null){
+            return null;
+        }
         try {
             for (String name: listeDesConcerts.getData()
                  ) {
@@ -288,6 +297,7 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
                 detailsDuConcert = genson.deserialize(scanner.nextLine(),DetailsDuConcert.class);
                 festival.add(detailsDuConcert);
                 inputStream.close();
+                connection.disconnect();
             }
         } catch (ProtocolException e) {
             e.printStackTrace();

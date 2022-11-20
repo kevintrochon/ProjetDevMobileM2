@@ -200,6 +200,7 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
                         });
                     }
                     inputStream.close();
+                    connection.disconnect();
                 } catch (Exception e) {
                     Log.e("Exchange-JSON :","Connot found the API", e);
                 }
