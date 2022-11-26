@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import com.owlike.genson.Genson;
 import com.owlike.genson.GensonBuilder;
@@ -38,6 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -46,7 +45,6 @@ import nc.unc.ktrochon.festivalnotification.R;
 import nc.unc.ktrochon.festivalnotification.entity.DetailsDuConcert;
 import nc.unc.ktrochon.festivalnotification.entity.FavoriConcert;
 import nc.unc.ktrochon.festivalnotification.entity.ListeDesConcerts;
-import nc.unc.ktrochon.festivalnotification.repository.NotificationDatabase;
 
 public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainActivity.ViewHolder> implements Filterable {
     private ListeDesConcerts listeDesConcerts;
@@ -157,99 +155,9 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
                 progressDialog.setMessage("Chargement en cours...");
                 progressDialog.setCancelable(false);
                 progressDialog.show();*/
-                List<DetailsDuConcert> listeATrier = getDetailsForAll();
-                String[] sorted = new String[listeATrier == null ? 0 : listeATrier.size()];
-                int index = 0;
-                String jour;
-                String scene;
-                switch (charSequence.toString()){
-                    case "null-Acoustique":
-                        scene = charSequence.toString().split("-")[0];
-                        index = 0;
-                        for (DetailsDuConcert detail:listeATrier) {
-                            if (detail.getData().getScene().equalsIgnoreCase(scene)){
-                                sorted[index] = detail.getData().getArtiste().replace(" ","-").toLowerCase(Locale.ROOT);
-                                index ++;
-                            }
-                        }
-                        break;
-                    case "null-Amplifiée":
-                        scene = charSequence.toString().split("-")[0];
-                        index = 0;
-                        for (DetailsDuConcert detail:listeATrier) {
-                            if (detail.getData().getScene().equalsIgnoreCase(scene)){
-                                sorted[index] = detail.getData().getArtiste().replace(" ","-").toLowerCase(Locale.ROOT);
-                                index ++;
-                            }
-                        }
-                        break;
-                    case "null-Vendredi":
-                        jour = charSequence.toString().split("-")[1];
-                        index = 0;
-                        for (DetailsDuConcert detail:listeATrier) {
-                            if (detail.getData().getJour().equalsIgnoreCase(jour)){
-                                sorted[index] = detail.getData().getArtiste().replace(" ","-").toLowerCase(Locale.ROOT);
-                                index ++;
-                            }
-                        }
-                        break;
-                    case "null-Samedi":
-                        jour = charSequence.toString().split("-")[1];
-                        index = 0;
-                        for (DetailsDuConcert detail:listeATrier) {
-                            if (detail.getData().getJour().equalsIgnoreCase(jour)){
-                                sorted[index] = detail.getData().getArtiste().replace(" ","-").toLowerCase(Locale.ROOT);
-                                index ++;
-                            }
-                        }
-                        break;
-                    case "Acoustique-Vendredi":
-                        scene = charSequence.toString().split("-")[0];
-                        jour = charSequence.toString().split("-")[1];
-                        index = 0;
-                        for (DetailsDuConcert detail:listeATrier) {
-                            if (detail.getData().getScene().equalsIgnoreCase(scene) && detail.getData().getJour().equalsIgnoreCase(jour)){
-                                sorted[index] = detail.getData().getArtiste().replace(" ","-").toLowerCase(Locale.ROOT);
-                                index ++;
-                            }
-                        }
-                        break;
-                    case "Acoustique-Samedi":scene = charSequence.toString().split("-")[0];
-                        jour = charSequence.toString().split("-")[1];
-                        index = 0;
-                        for (DetailsDuConcert detail:listeATrier) {
-                            if (detail.getData().getScene().equalsIgnoreCase(scene) && detail.getData().getJour().equalsIgnoreCase(jour)){
-                                sorted[index] = detail.getData().getArtiste().replace(" ","-").toLowerCase(Locale.ROOT);
-                                index ++;
-                            }
-                        }
-                        break;
-                    case "Amplifiée-Vendredi":scene = charSequence.toString().split("-")[0];
-                        jour = charSequence.toString().split("-")[1];
-                        index = 0;
-                        for (DetailsDuConcert detail:listeATrier) {
-                            if (detail.getData().getScene().equalsIgnoreCase(scene) && detail.getData().getJour().equalsIgnoreCase(jour)){
-                                sorted[index] = detail.getData().getArtiste().replace(" ","-").toLowerCase(Locale.ROOT);
-                                index ++;
-                            }
-                        }
-                        break;
-                    case "Amplifiée-Samedi":scene = charSequence.toString().split("-")[0];
-                        jour = charSequence.toString().split("-")[1];
-                        index = 0;
-                        for (DetailsDuConcert detail:listeATrier) {
-                            if (detail.getData().getScene().equalsIgnoreCase(scene) && detail.getData().getJour().equalsIgnoreCase(jour)){
-                                sorted[index] = detail.getData().getArtiste().replace(" ","-").toLowerCase(Locale.ROOT);
-                                index ++;
-                            }
-                        }
-                        break;
-                    default:
-                        break;
-                }
                 FilterResults results = new FilterResults();
-                listeDesConcerts.setData(sorted);
-                results.count = listeDesConcerts.getData().length;
+                listeDesConcerts.setData(getListFiltree(charSequence));
+                results.count = listeDesConcerts.getData()== null ? 0 : listeDesConcerts.getData().length;
                 results.values = listeDesConcerts.getData();
                 return results;
             }
@@ -263,6 +171,21 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
                 notifyDataSetChanged();
             }
         };
+    }
+
+    private String[] getListFiltree(CharSequence charSequence) {
+        List<DetailsDuConcert> listeATrier = getDetailsForAll();
+        String[] sorted = new String[listeATrier == null ? 0 : listeATrier.size()];
+        int index = 0;
+        int position = 0;
+        for (DetailsDuConcert detail:listeATrier) {
+            if (listeATrier.get(index).getData().getScene().equalsIgnoreCase(charSequence.toString())) {
+                sorted[position] = detail.getData().getArtiste().replace(" ", "-").toLowerCase(Locale.ROOT);
+                position++;
+            }
+            index++;
+        }
+        return sorted;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

@@ -164,13 +164,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         if (MainActivity.this.adapter != null){
-            if (adapterView.getSelectedView().getId()==R.id.spinner_scene){
-                choixSceneUtilisateur = adapterView.getItemAtPosition(i).toString();
-            }else {
-                choixJourUtilisateur = adapterView.getItemAtPosition(i).toString();
-            }
-            choixUtilisateurFinal = choixSceneUtilisateur +"-"+choixJourUtilisateur;
-            MainActivity.this.adapter.getFilter().filter(choixUtilisateurFinal);
+            MainActivity.this.adapter.getFilter().filter(adapterView.getItemAtPosition(i).toString());
         }
     }
 
