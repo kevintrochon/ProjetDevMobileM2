@@ -2,6 +2,9 @@ package nc.unc.ktrochon.festivalnotification.entity;
 
 import java.io.Serializable;
 
+/**
+ * Classe qui represente le json recu par l'API. pour la serialisation.
+ */
 public class DetailsDuConcert implements Serializable {
     private String code;
     private String message;

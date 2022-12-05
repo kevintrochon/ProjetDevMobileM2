@@ -8,6 +8,9 @@ import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 
+/**
+ * Classe entite pour la base des donnees pour la sauvegarde des favoris.
+ */
 @Entity(tableName = "FavoriConcert")
 public class FavoriConcert implements Serializable {
 

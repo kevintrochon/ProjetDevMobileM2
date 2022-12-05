@@ -3,6 +3,9 @@ package nc.unc.ktrochon.festivalnotification.entity;
 import java.io.Serializable;
 import java.util.Arrays;
 
+/**
+ * Classe entite pour la listes des concerts. pour la serialisation
+ */
 public class ListeDesConcerts implements Serializable {
     private String code;
     private String message;

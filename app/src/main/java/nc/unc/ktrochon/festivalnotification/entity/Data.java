@@ -2,6 +2,9 @@ package nc.unc.ktrochon.festivalnotification.entity;
 
 import java.util.Objects;
 
+/**
+ * Classe qui represente les details des concerts. pour la serialisation
+ */
 public class Data {
     private String artiste;
     private String texte;

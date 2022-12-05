@@ -3,20 +3,18 @@ package nc.unc.ktrochon.festivalnotification.notification;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 
-import nc.unc.ktrochon.festivalnotification.DescriptionDuConcertActivity;
-import nc.unc.ktrochon.festivalnotification.MainActivity;
 import nc.unc.ktrochon.festivalnotification.R;
-import nc.unc.ktrochon.festivalnotification.entity.DetailsDuConcert;
 
+/**
+ * Classe pour la gestion des notifications en cas de concert en favori.
+ */
 public class ConcertNotification extends ContextWrapper {
 
     private NotificationManager notificationManager;
@@ -55,17 +53,9 @@ public class ConcertNotification extends ContextWrapper {
     public void notify( int id, boolean prioritary, String title, String message ) {
         String channelId = prioritary ? CHANNEL_HIGH_ID : CHANNEL_DEFAULT_ID;
         Resources res = getApplicationContext().getResources();
-        Context context = getApplicationContext();
-
-        /* Lien avec l'activité à ouvrir : ici DescriptionDuConcertActivity */
-        /*Intent notificationIntent = new Intent(context, DescriptionDuConcertActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(
-                getApplicationContext(), 456, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);*/
-
         Notification notification = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             notification = new Notification.Builder( getApplicationContext(), channelId )
-                    //.setContentIntent( contentIntent )      // On injecte le contentIntent
                     .setContentTitle( title )
                     .setContentText( message )
                     .setSmallIcon( R.drawable.ic_launcher_foreground )

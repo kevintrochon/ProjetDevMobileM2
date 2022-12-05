@@ -10,6 +10,9 @@ import java.util.List;
 
 import nc.unc.ktrochon.festivalnotification.entity.FavoriConcert;
 
+/**
+ * Interface qui permet a indiquer a l orm comment recuperer les donnees.
+ */
 @Dao
 public interface FavoriDAO {
     @Query("SELECT * FROM FavoriConcert")
