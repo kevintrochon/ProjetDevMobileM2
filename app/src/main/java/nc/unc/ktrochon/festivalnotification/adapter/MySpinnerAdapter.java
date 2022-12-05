@@ -1,6 +1,5 @@
 package nc.unc.ktrochon.festivalnotification.adapter;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +10,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import nc.unc.ktrochon.festivalnotification.R;
-
+/**
+ * Spinner qui permet de filtrer la liste des concerts.
+ */
 public class MySpinnerAdapter extends BaseAdapter {
 
     List<String> monFiltre = new ArrayList<>();

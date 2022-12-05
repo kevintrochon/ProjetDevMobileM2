@@ -4,6 +4,9 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+/**
+ * Classe qui permet de regarder la connectivite de l'application a internet.
+ */
 public class NetworkHelper {
 
     public static boolean isNetworkAvailable(Context context) {
