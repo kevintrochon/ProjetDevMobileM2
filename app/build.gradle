@@ -32,8 +32,9 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    // Dependance : Librairie de serialisation expliquer dans le cours.
     implementation 'com.owlike:genson:1.6'
-    //    D'ependance : ORM room pour la gestion de la bdd.
+    // Dependance : ORM room pour la gestion de la bdd, expliquer dans le cours.
     implementation 'androidx.room:room-runtime:2.4.3'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

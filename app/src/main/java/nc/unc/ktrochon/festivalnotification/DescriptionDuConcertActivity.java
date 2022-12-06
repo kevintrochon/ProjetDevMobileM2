@@ -50,15 +50,13 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
     private NotificationDatabase database = null;
     private String nomDuGroupe;
     private BottomNavigationView bottomNavigationView;
-    private ImageFragment imageFragment = new ImageFragment();
-    private DescriptionFragment descriptionFragment = new DescriptionFragment();
     private BottomNavigationView navigationView;
     private String description;
     private String addressWeb;
-    private FavoriConcert myfavoriConcert = new FavoriConcert();
+    private final FavoriConcert myfavoriConcert = new FavoriConcert();
     private int temps;
 
-    @SuppressLint("RestrictedApi")
+    @SuppressLint({"RestrictedApi", "NonConstantResourceId"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,138 +77,109 @@ public class DescriptionDuConcertActivity extends AppCompatActivity {
         }else {
             bottomNavigationView.getMenu().findItem(R.id.notification).setIcon(R.drawable.ic_notifications);
         }
-        DescriptionDuConcertActivity.this.bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.home:
-                        Intent intent = new Intent(DescriptionDuConcertActivity.this,MainActivity.class);
-                        DescriptionDuConcertActivity.this.startActivity(intent);
-                        break;
-                    case R.id.facebook:
-                        Intent intent1 = new Intent(Intent.ACTION_VIEW, Uri.parse(addressWeb));
-                        DescriptionDuConcertActivity.this.startActivity(intent1);
-                        break;
-                    case R.id.notification:
-                        if (myfavoriConcert.getIsFavori()==IS_FAVORI){
-                            item.setIcon(R.drawable.ic_notifications);
-                            myfavoriConcert.setIsFavori(IS_FAVORI);
-                            myfavoriConcert.setArtiste(nomDuGroupe);
-                            myfavoriConcert.setHeure(heure.toString());
-                            myfavoriConcert.setJours(jour.toString());
-                            myfavoriConcert.setTime(""+detailConcert.getData().getTime());
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    database.favoriDAO().deleteFavori(myfavoriConcert);
-                                }
-                            }).start();
-                        }
-                        else {
+        DescriptionDuConcertActivity.this.bottomNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()){
+                case R.id.home:
+                    Intent intent = new Intent(DescriptionDuConcertActivity.this,MainActivity.class);
+                    DescriptionDuConcertActivity.this.startActivity(intent);
+                    break;
+                case R.id.facebook:
+                    Intent intent1 = new Intent(Intent.ACTION_VIEW, Uri.parse(addressWeb));
+                    DescriptionDuConcertActivity.this.startActivity(intent1);
+                    break;
+                case R.id.notification:
+                    if (myfavoriConcert.getIsFavori()==IS_FAVORI){
+                        item.setIcon(R.drawable.ic_notifications);
+                        myfavoriConcert.setIsFavori(IS_FAVORI);
+                        myfavoriConcert.setArtiste(nomDuGroupe);
+                        myfavoriConcert.setHeure(heure.toString());
+                        myfavoriConcert.setJours(jour.toString());
+                        myfavoriConcert.setTime(""+detailConcert.getData().getTime());
+                        new Thread(() -> database.favoriDAO().deleteFavori(myfavoriConcert)).start();
+                    }
+                    else {
 
-                            Handler handler = new Handler();
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    concertNotification.notify(1,false, "My concert notification",artiste.getText().toString());
-                                }
-                            },temps);
-                            myfavoriConcert.setIsFavori(IS_FAVORI);
-                            myfavoriConcert.setArtiste(nomDuGroupe);
-                            myfavoriConcert.setHeure(heure.toString());
-                            myfavoriConcert.setJours(jour.toString());
-                            myfavoriConcert.setTime(""+detailConcert.getData().getTime());
-                            item.setIcon(R.drawable.ic_done);
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    database.favoriDAO().insertFavori(myfavoriConcert);
-                                }
-                            }).start();
-                        }
-                        return true;
-                }
-                return false;
+                        Handler handler = new Handler();
+                        handler.postDelayed(() -> concertNotification.notify(1,false, "My concert notification",artiste.getText().toString()),temps);
+                        myfavoriConcert.setIsFavori(IS_FAVORI);
+                        myfavoriConcert.setArtiste(nomDuGroupe);
+                        myfavoriConcert.setHeure(heure.toString());
+                        myfavoriConcert.setJours(jour.toString());
+                        myfavoriConcert.setTime(""+detailConcert.getData().getTime());
+                        item.setIcon(R.drawable.ic_done);
+                        new Thread(() -> database.favoriDAO().insertFavori(myfavoriConcert)).start();
+                    }
+                    return true;
             }
+            return false;
         });
 
     }
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onResume() {
         super.onResume();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                HttpsURLConnection connection = null;
-                InputStream inputStream = null;
-                try {
-                    if (NetworkHelper.isNetworkAvailable(DescriptionDuConcertActivity.this)) {
-                        URL url = new URL(APIREST +nomDuGroupe);
-                        connection = (HttpsURLConnection) url.openConnection();
-                        connection.setRequestMethod(REQUEST_METHOD);
-                        inputStream = new BufferedInputStream(connection.getInputStream());
-                        Scanner scanner = new Scanner(inputStream);
-                        Genson genson = new GensonBuilder().useConstructorWithArguments(true).create();
-                        detailConcert = genson.deserialize(scanner.nextLine(),DetailsDuConcert.class);
-                        temps = detailConcert.getData().getTime() * SECOND;
-                        database = Room.databaseBuilder(getApplicationContext(), NotificationDatabase.class,"festival-notification").build();
-                        FavoriConcert favoriConcert = database.favoriDAO().loadById(nomDuGroupe);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                artiste.setText(detailConcert.getData().getArtiste());
-                                description = detailConcert.getData().getTexte();
-                                getSupportFragmentManager().beginTransaction()
-                                        .add(R.id.container_description_menu,DescriptionFragment.newInstance(description),DescriptionFragment.class.getName())
-                                        .commit();
-                                DescriptionDuConcertActivity.this.navigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-                                    @Override
-                                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                                        switch (item.getItemId()){
-                                            case R.id.image_groupe:
-                                                getSupportFragmentManager().beginTransaction()
-                                                        .add(R.id.container_description_menu,ImageFragment.newInstance(detailConcert.getData().getImage()),ImageFragment.class.getName())
-                                                        .commit();
-                                                return true;
-                                            case R.id.description_groupe:
-                                                getSupportFragmentManager().beginTransaction()
-                                                        .add(R.id.container_description_menu,DescriptionFragment.newInstance(description),DescriptionFragment.class.getName())
-                                                        .commit();
-                                                return true;
-                                        }
-                                        return false;
-                                    }
-                                });
-                                addressWeb = detailConcert.getData().getWeb();
-                                scene.setText(detailConcert.getData().getScene());
-                                jour.setText(detailConcert.getData().getJour());
-                                heure.setText(detailConcert.getData().getHeure());
-                                if (favoriConcert != null){
-                                    myfavoriConcert.setArtiste(favoriConcert.getArtiste());
-                                    myfavoriConcert.setJours(favoriConcert.getJours());
-                                    myfavoriConcert.setHeure(favoriConcert.getHeure());
-                                    myfavoriConcert.setTime(favoriConcert.getTime());
-                                    myfavoriConcert.setIsFavori(favoriConcert.getIsFavori());
-                                }
+        new Thread(() -> {
+            HttpsURLConnection connection = null;
+            InputStream inputStream = null;
+            try {
+                if (NetworkHelper.isNetworkAvailable(DescriptionDuConcertActivity.this)) {
+                    URL url = new URL(APIREST +nomDuGroupe);
+                    connection = (HttpsURLConnection) url.openConnection();
+                    connection.setRequestMethod(REQUEST_METHOD);
+                    inputStream = new BufferedInputStream(connection.getInputStream());
+                    Scanner scanner = new Scanner(inputStream);
+                    Genson genson = new GensonBuilder().useConstructorWithArguments(true).create();
+                    detailConcert = genson.deserialize(scanner.nextLine(),DetailsDuConcert.class);
+                    temps = detailConcert.getData().getTime() * SECOND;
+                    database = Room.databaseBuilder(getApplicationContext(), NotificationDatabase.class,"festival-notification").build();
+                    FavoriConcert favoriConcert = database.favoriDAO().loadById(nomDuGroupe);
+                    runOnUiThread(() -> {
+                        artiste.setText(detailConcert.getData().getArtiste());
+                        description = detailConcert.getData().getTexte();
+                        getSupportFragmentManager().beginTransaction()
+                                .add(R.id.container_description_menu,DescriptionFragment.newInstance(description),DescriptionFragment.class.getName())
+                                .commit();
+                        DescriptionDuConcertActivity.this.navigationView.setOnItemSelectedListener(item -> {
+                            switch (item.getItemId()){
+                                case R.id.image_groupe:
+                                    getSupportFragmentManager().beginTransaction()
+                                            .add(R.id.container_description_menu,ImageFragment.newInstance(detailConcert.getData().getImage()),ImageFragment.class.getName())
+                                            .commit();
+                                    return true;
+                                case R.id.description_groupe:
+                                    getSupportFragmentManager().beginTransaction()
+                                            .add(R.id.container_description_menu,DescriptionFragment.newInstance(description),DescriptionFragment.class.getName())
+                                            .commit();
+                                    return true;
                             }
+                            return false;
                         });
-                    }
-                    inputStream.close();
-                    connection.disconnect();
-                } catch (Exception e) {
-                    Log.e("Exchange-JSON :","Connot found the API", e);
+                        addressWeb = detailConcert.getData().getWeb();
+                        scene.setText(detailConcert.getData().getScene());
+                        jour.setText(detailConcert.getData().getJour());
+                        heure.setText(detailConcert.getData().getHeure());
+                        if (favoriConcert != null){
+                            myfavoriConcert.setArtiste(favoriConcert.getArtiste());
+                            myfavoriConcert.setJours(favoriConcert.getJours());
+                            myfavoriConcert.setHeure(favoriConcert.getHeure());
+                            myfavoriConcert.setTime(favoriConcert.getTime());
+                            myfavoriConcert.setIsFavori(favoriConcert.getIsFavori());
+                        }
+                    });
                 }
-                finally {
-                    if (connection != null){
-                        connection.disconnect();
-                    }
+                if(inputStream != null)inputStream.close();
+                if(connection != null) connection.disconnect();
+            } catch (Exception e) {
+                Log.e("Exchange-JSON :","Connot found the API", e);
+            }
+            finally {
+                if (connection != null){
+                    connection.disconnect();
                 }
             }
         }).start();
     }
 
-    public String getDescription() {
-        return description;
-    }
 }

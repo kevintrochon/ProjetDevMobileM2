@@ -108,7 +108,7 @@ public class Data {
 
     @Override
     public String toString() {
-        return "Data{" +
+        return "Data {" +
                 "artiste='" + artiste + '\'' +
                 ", texte='" + texte + '\'' +
                 ", web='" + web + '\'' +

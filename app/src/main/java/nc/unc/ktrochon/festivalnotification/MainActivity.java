@@ -75,18 +75,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         recyclerView.setAdapter(adapter);
     }
 
-    /**
-     * method qui permet d atteindre la vue des details des concerts.
-     * @param nomGroupe le nom du groupe.
-     */
-    private void getDetails(String nomGroupe) {
-        Intent intent = new Intent(this, DescriptionDuConcertActivity.class);
-        intent.putExtra("nomGroupe",nomGroupe);
-        isFavori = this.adapter.getMyFavorit(nomGroupe);
-        intent.putExtra("favori",isFavori);
-        this.startActivity(intent);
-    }
-
     protected void onStart() {
         super.onStart();
     }
@@ -121,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         database = Room.databaseBuilder(getApplicationContext(), NotificationDatabase.class, DATABASENAME).build();
                         List<FavoriConcert> favoriConcerts = database.favoriDAO().loadAll();
                         festival = genson.deserialize(scanner.nextLine(),ListeDesConcerts.class);
+                        //methode qui renvoie le traitement du thread a la vue (method de callback).
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

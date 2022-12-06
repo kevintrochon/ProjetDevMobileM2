@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="nc.unc.ktrochon.festivalnotification">
 
+    <!-- Accord la permission a l'acces a l etat du reseaux. -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Accord la permission de connection a internet. -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application

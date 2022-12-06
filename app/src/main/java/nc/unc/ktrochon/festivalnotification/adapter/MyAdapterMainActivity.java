@@ -33,7 +33,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -59,7 +58,7 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
     private InputStream inputStream = null;
     private static final String API_URL = "https://daviddurand.info/D228/festival/illustrations/";
     private static final String END_URL = "/image.jpg";
-    private List<DetailsDuConcert> festival = new ArrayList<>();
+    private final List<DetailsDuConcert> festival = new ArrayList<>();
     private DetailsDuConcert detailsDuConcert = null;
     private String nomConcert;
 
@@ -77,6 +76,7 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
      * Getter de l attribut liste des concerts.
      * @param listeDesConcerts nouvelle liste des concerts.
      */
+    @SuppressLint("NotifyDataSetChanged")
     public void setListeDesConcerts(ListeDesConcerts listeDesConcerts) {
         this.listeDesConcerts = listeDesConcerts;
         notifyDataSetChanged();
@@ -86,6 +86,7 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
      * Setter de la liste des favoris.
      * @param favoris nouvelle liste des favoris.
      */
+    @SuppressLint("NotifyDataSetChanged")
     public void setFavoris(List<FavoriConcert> favoris) {
         this.favoris = favoris;
         notifyDataSetChanged();
@@ -233,21 +234,15 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
      * @param charSequence valeur du filtre a appliquer a la liste des concerts.
      * @return un tableau de String triee le filtre.
      */
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private String[] getListFilterByScene(CharSequence charSequence) {
         List<DetailsDuConcert> listeATrier = getDetailsForAll();
-        String[] sorted = new String[listeATrier == null ? 0 : listeATrier.size()];
-        int index = 0;
-        int position = 0;
-        if(listeATrier != null) {
-            for (DetailsDuConcert detail : listeATrier) {
-                if (listeATrier.get(index).getData().getScene().equalsIgnoreCase(charSequence.toString())) {
-                    sorted[position] = detail.getData().getArtiste().replace(" ", "-").toLowerCase(Locale.ROOT);
-                    position++;
-                }
-                index++;
-            }
-        }
-        return sorted;
+        if(listeATrier == null) throw new AssertionError();
+        return listeATrier.stream()
+                // je filtre la liste par rapport a l attribut Scene.
+                .filter(detailsDuConcert1 -> detailsDuConcert1.getData().getScene().equalsIgnoreCase(charSequence.toString()))
+                // je modifie le nom du groupe / artiste et je retourne le resultat sous forme de tableau de chaine de caractere.
+                .map(detailsDuConcert1 -> detailsDuConcert1.getData().getArtiste().replace(" ", "-").toLowerCase(Locale.ROOT)).toArray(String[]::new);
     }
 
     /**
@@ -261,13 +256,12 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
         String typeSceneConcert = charSequence.subSequence(DebutMotScene, charSequence.length()).toString();
         List<DetailsDuConcert> listeATrier = getDetailsForAll();
         if (listeATrier == null) throw new AssertionError();
-        List<String> listeFiltree = listeATrier.stream()
+        return listeATrier.stream()
+                // je filtre la liste par rapport a l attribut Scene et du Jour.
                 .filter(detailsDuConcert1 -> detailsDuConcert1.getData().getScene().equalsIgnoreCase(typeSceneConcert)
                         && detailsDuConcert1.getData().getJour().equalsIgnoreCase(jourConcert))
-                .map(detailsDuConcert1 -> detailsDuConcert1.getData().getArtiste().replace(" ", "-").toLowerCase(Locale.ROOT))
-                .collect(Collectors.toList());
-        String[] sorted = listeFiltree.toArray(new String[listeFiltree.size()]);
-        return sorted;
+                // je modifie le nom du groupe / artiste et je retourne le resultat sous forme de tableau de chaine de caractere.
+                .map(detailsDuConcert1 -> detailsDuConcert1.getData().getArtiste().replace(" ", "-").toLowerCase(Locale.ROOT)).toArray(String[]::new);
     }
 
     /**
@@ -279,12 +273,11 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
     private String[] getListFilterByDay(CharSequence charSequence) {
         List<DetailsDuConcert> listeATrier = getDetailsForAll();
         if (listeATrier == null) throw new AssertionError();
-        List<String> listFiltered = listeATrier.stream()
-                                                .filter(detailsDuConcert1 -> detailsDuConcert1.getData().getJour().equalsIgnoreCase(charSequence.toString()))
-                                                .map(detailsDuConcert1 -> detailsDuConcert1.getData().getArtiste().replace(" ","-").toLowerCase(Locale.ROOT))
-                                                .collect(Collectors.toList());
-        String[] sorted = listFiltered.toArray(new String[listFiltered.size()]);
-        return sorted;
+        return listeATrier.stream()
+                // je filtre la liste par rapport a l attribut Jour.
+                .filter(detailsDuConcert1 -> detailsDuConcert1.getData().getJour().equalsIgnoreCase(charSequence.toString()))
+                // je modifie le nom du groupe / artiste et je retourne le resultat sous forme de tableau de chaine de caractere.
+                .map(detailsDuConcert1 -> detailsDuConcert1.getData().getArtiste().replace(" ", "-").toLowerCase(Locale.ROOT)).toArray(String[]::new);
     }
 
     /**
@@ -308,14 +301,6 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
         TextView groupView = cardView.findViewById(R.id.textgroup_view);
         ImageView imageGroup = cardView.findViewById(R.id.imagegroup_view);
         ImageView imageFavori = cardView.findViewById(R.id.nomgroup_view);
-    }
-
-    /**
-     * Getter de l attribut favori.
-     * @return un booleen.
-     */
-    public boolean isFavori() {
-        return favori;
     }
 
     /**
